@@ -1,0 +1,2 @@
+# Comet
+Comet discord bot
