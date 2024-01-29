@@ -1,4 +1,4 @@
-import os, discord, pandas as pd, re
+import os, discord, pandas as pd, re, requests
 from dotenv import load_dotenv
 from discord.ext import commands
 from function import *
@@ -6,7 +6,6 @@ from function import *
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
-
 
 try:
     intents = discord.Intents.all()
@@ -48,8 +47,31 @@ async def gw2(ctx, function_name: str,name,key = None):
     def del_api_function(name):
         job = Mongo()
         job.delete("gw2","api-key",name)
+    
+    def get_user_info(name):
         
+        job = Mongo()
+        
+        try:
+            data = job.read("gw2","api-key",name)
+            for value in data: key = value['key']
+            gw2_url = 'https://api.guildwars2.com/v2/account'
+            headers = {'Authorization': f'Bearer {key}'}
+            response = requests.get(gw2_url, headers=headers)
+            
+            if response.status_code == 200:
+                account_data = response.json()
+                return account_data['name'],account_data['age'],account_data['fractal_level'],account_data['wvw_rank']
+            else:
+                return None
+        except:
+            return None
+    
+    def get_item_recipe(item_name):
+        pass
+
     api_functions = {"reg-api": reg_api_key_function,"del-api": del_api_function}
+    gw2_functions = {"get-stats": get_user_info,"get-recipe:": get_item_recipe}
     
     if function_name in api_functions:
         if key:
@@ -58,8 +80,24 @@ async def gw2(ctx, function_name: str,name,key = None):
         else:
             api_functions[function_name](name)
             await ctx.send(f"Finish deleting {name} api key")
-    
+            
+    elif function_name in gw2_functions:
+        if function_name == "get-stats":
+            data = gw2_functions[function_name](name)
+            account_name, account_time, account_fractal, account_wvw = data
+            account_age = Calculator().display_time(account_time)
+            
+            if data:
+                await ctx.send(f"User: {account_name}")
+                await ctx.send(f"Play time: {account_age}")
+                await ctx.send(f"Fractal level: {account_fractal}")
+                await ctx.send(f"WvW level: {account_wvw}")
+            else:
+                await ctx.send("No data found, have you register your api yet?")
+                
+        elif function_name == "get-recipe":
+            pass
     else:
         await ctx.send("Invalid function name. Please provide a valid function name.")
-
+        
 bot.run(TOKEN)
