@@ -1,4 +1,4 @@
-import operator,os,pymongo, pandas as pd, json
+import operator,os,pymongo, json, discord,requests
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -9,16 +9,6 @@ class Calculator:
         self.x = x
         self.y = y
 
-    def calculation(self):
-        op_dict = {"+": operator.add, "-": operator.sub, "*": operator.mul, "/": operator.truediv}
-        if self.operator in op_dict.keys():
-            for key in op_dict:
-                if self.operator == key:
-                    result = op_dict[f"{key}"](self.x,self.y)
-                    return result
-        else:
-            return "Invalid operator"
-        
     @staticmethod
     def display_time(seconds, granularity=2):
         intervals = (
@@ -37,6 +27,14 @@ class Calculator:
                     name = name.rstrip('s')
                 result.append("{} {}".format(value, name))
         return ', '.join(result[:granularity])
+
+    @staticmethod
+    def display_currency(copper):
+        silver = copper // 100
+        copper_remainder = copper % 100
+        gold = silver // 100
+        silver_remainder = silver % 100
+        return gold, silver_remainder, copper_remainder
 
 class Mongo:
     def __init__(self,uri=None,database=None):
@@ -81,12 +79,8 @@ class Mongo:
         mysticforge_data = list(mysticforge_recipe_collection.find(query_id))
         items_recipe_data = list(items_recipe_collection.find(query_id))
     
-        if mysticforge_data and items_recipe_data:
+        if mysticforge_data or items_recipe_data:
             return mysticforge_data, items_recipe_data
-        elif mysticforge_data:
-            return mysticforge_data
-        elif items_recipe_data:
-            return items_recipe_data
         else:
             return None
     
@@ -100,11 +94,49 @@ class Mongo:
         for i in data: item_name = i["name"]
         
         return item_name
+    
+    def get_item_id(self, database, item_name):
+        self.database = self.client[f"{database}"]
+        collection = self.database["items_name"]
         
-job = Mongo()
-print(job.get_item_name("gw2_items",4))
+        query = {"name": f"{item_name}"}
+        data = collection.find(query)
         
+        for i in data: item_id = i["item_id"]
         
+        return item_id
+    
+    @staticmethod
+    def get_item_icon(item_name):
+        job = Mongo()
+        item_id = job.get_item_id("gw2_items",item_name)
+        url = f'https://api.guildwars2.com/v2/items/{item_id}'
         
+        response = requests.get(url)
+        data = response.json()
+        icon = data['icon']
+        
+        return icon
+        
+class EmbedCursor:
+    def __init__(self,embed):
+        self.embed = embed
+    
+    def add_row(self,col1,col2,col3,isHeader=False):
+        if isHeader == True:
+            self.embed.add_field(name=f"{col1}",value=" ", inline=True)
+            self.embed.add_field(name=f"{col2}",value=" ", inline=True)
+            self.embed.add_field(name=f"{col3}",value=" ", inline=True)
+        else:
+            self.embed.add_field(name="",value=f"{col1}", inline=True)
+            self.embed.add_field(name="",value=f"{col2}", inline=True)
+            self.embed.add_field(name="",value=f"{col3}", inline=True)
+
+    def add_2_column_row(self,category,value):
+        self.embed.add_field(name=f"{category}",value=" ", inline=True)
+        self.embed.add_field(name="",value=f"{value}", inline=True)
+        self.embed.add_field(name="",value=f" ", inline=True)
+
+
         
         

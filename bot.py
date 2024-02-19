@@ -1,6 +1,7 @@
-import os, discord, pandas as pd, re, requests
+import os, discord, re, requests
 from dotenv import load_dotenv
 from discord.ext import commands
+from forex_python.converter import CurrencyRates
 from function import *
 
 load_dotenv()
@@ -27,16 +28,9 @@ async def on_member_join(member):
 
 @bot.command(name="cal",help="calculator for basic calculations")
 async def calculation(ctx, expression: str):
-    match = re.match(r"(\d+)([+\-*/])(\d+)", expression)
-    if match:
-        x, operator, y = match.groups()
-        job = Calculator(operator, int(x), int(y))
-        result = job.calculation()
-        await ctx.send(result)
-    else:
-        await ctx.send("Invalid input. Please provide the expression in the format: <number><operator><number>. (No space between operator and numbers)")
-        await ctx.send("+: plus, -: minus, *: multiplication, /: division")
-
+    result = eval(expression)
+    await ctx.send(f"Result of {expression} is {result}")
+#gw2 stuff...
 @bot.group()
 async def gw2(ctx):
     if ctx.invoked_subcommand is None:
@@ -44,7 +38,15 @@ async def gw2(ctx):
 
 @gw2.command()
 async def help(ctx):
-    embed = discord.Embed(title="Help pannel",description="Syntax of all")
+    embed = discord.Embed(title="Help pannel",description="Syntax of all",color=discord.Color.red())
+    cursor = EmbedCursor(embed=embed)
+    cursor.add_row("Command","Syntax","Function",True)
+    cursor.add_row("help"," ","Display this message")
+    cursor.add_row("reg-api","<name of your choice> <your gw2 api>","Register your gw2 api to a name of your choice")
+    cursor.add_row("del-api","<name of your registered api>","Delete your registered api")
+    cursor.add_row("get-stats","<name of your registered api>","Get ingame user stat")
+    cursor.add_row("recipe","<item name>","Get recipe or mystic forge recipe or both")
+    cursor.add_row("price","<item name>","Get trading post price")
     await ctx.send(embed=embed)
         
 @gw2.command(name="reg-api")
@@ -91,7 +93,7 @@ async def get_stats(ctx,name):
     account_age = Calculator().display_time(account_time)
     
     if data:
-        embed = discord.Embed(title=f"User: {account_name}")
+        embed = discord.Embed(title=f"User: {account_name}",color=discord.Color.green())
         embed.add_field(name="Playtime:",value=f"{account_age}",inline=False)
         embed.add_field(name="Fractal level:",value=f"{account_fractal}",inline=False)
         embed.add_field(name="WvW rank:",value=f"{account_wvw}",inline=False)
@@ -109,12 +111,18 @@ async def recipe(ctx, *, name: str):
         job = Mongo()
         return job.get_item_name("gw2_items",item_id)
     
+    def get_icon(item_name):
+        job = Mongo()
+        return job.get_item_icon(item_name)
+    
     def to_embed(is_mystic,data):
         if is_mystic == True:
             output_item = data[0]['name']
             output_count = data[0]['output_item_count']
 
-            mystic_embed = discord.Embed(title="Mystic Forge Recipe",description=f"{output_count} {output_item}")
+            mystic_embed = discord.Embed(title="Mystic Forge Recipe",description=f"{output_count} {output_item}",color=discord.Color.blue())
+            mystic_embed.set_thumbnail(url=f"{get_icon(output_item)}")
+            
             mystic_embed.add_field(name="Ingredient",value=" ")
             mystic_embed.add_field(name="Amount",value=" ")
             mystic_embed.add_field(name=" ",value=" ")
@@ -135,17 +143,12 @@ async def recipe(ctx, *, name: str):
             ingame_code = data[0]["chat_link"]
             disciplines = data[0]["disciplines"]
             
-            embed = discord.Embed(title="Recipe",description=f"{output_count} {output_item}")
-            
-            embed.add_field(name="Code:",value=f"{ingame_code}")
-            embed.add_field(name=" ",value=" ")
-            embed.add_field(name=" ",value=" ")
-            embed.add_field(name="Disciplines:",value=f"{disciplines}")
-            embed.add_field(name=" ",value=" ")
-            embed.add_field(name=" ",value=" ")
+            embed = discord.Embed(title="Recipe",description=f"{output_count} {output_item}",color=discord.Color.dark_orange())
+            embed.set_thumbnail(url=f"{get_icon(output_item)}")
             
             embed.add_field(name="Ingredient",value=" ")
             embed.add_field(name="Amount",value=" ")
+            embed.add_field(name=" ",value=" ")
             
             for i in data[0]["ingredients"]:
                 item_id = i['item_id']
@@ -154,16 +157,79 @@ async def recipe(ctx, *, name: str):
                 embed.add_field(name=f"",value=f"{item_name}", inline=True)
                 embed.add_field(name="",value=f"{item_count}", inline=True)
                 embed.add_field(name="",value=f"", inline=True)
-                
+            
+            embed.add_field(name="Code:",value=f"", inline=True)
+            embed.add_field(name=f"",value=f"{ingame_code}", inline=True)
+            embed.add_field(name="",value=f"", inline=True)
+            
+            embed.add_field(name="Disciplines:",value=f"", inline=True)
+            embed.add_field(name=f"",value=f"{disciplines}", inline=True)
+            embed.add_field(name="",value=f"", inline=True)
+            
             return embed
         
     data = get_item_recipe(name)
 
-    if len(data) == 2:
-        
+    if data is None:
+        await ctx.send("No recipe found :(")
+    else:
         mystic_forge_data, item_recipe_data = data
-        
-        await ctx.send(embed = to_embed(is_mystic=True,data=mystic_forge_data))
-        await ctx.send(embed = to_embed(is_mystic=False,data=item_recipe_data))
+        if not item_recipe_data:
+            await ctx.send(embed = to_embed(is_mystic=True,data=mystic_forge_data))
+        elif not mystic_forge_data:
+            await ctx.send(embed = to_embed(is_mystic=False,data=item_recipe_data))
+        else:
+            await ctx.send(embed = to_embed(is_mystic=True,data=mystic_forge_data))
+            await ctx.send(embed = to_embed(is_mystic=False,data=item_recipe_data))
+
+@gw2.command()
+async def price(ctx, *, item_name: str):
+    def get_id(item_name):
+        job = Mongo()
+        return job.get_item_id("gw2_items",item_name)
     
+    def get_icon(item_name):
+        job = Mongo()
+        return job.get_item_icon(item_name)
+    
+    def get_currency(copper):
+        job = Calculator()
+        return job.display_currency(copper)
+    
+    api_endpoint = f"https://api.guildwars2.com/v2/commerce/prices/{get_id(item_name)}"
+    response = requests.get(api_endpoint)
+    data = response.json()
+    
+    buys = data['buys']
+    sells = data['sells']
+    
+    embed = discord.Embed(title=f"{item_name}",color=discord.Color.gold())
+    embed.set_thumbnail(url=f"{get_icon(item_name)}")
+    cursor = EmbedCursor(embed=embed)
+    
+    gold, silver, copper = get_currency(buys['unit_price'])
+    cursor.add_row("Buy Order"," "," ",True)
+    cursor.add_2_column_row("Highest buy order:",f"{gold} gold, {silver} silver, {copper} copper")
+    cursor.add_2_column_row("Total buy orders:",f"{buys['quantity']}")
+    
+    gold, silver, copper = get_currency(sells['unit_price'])
+    cursor.add_row("Sell Order"," "," ",True)
+    cursor.add_2_column_row("Lowest sell order:",f"{gold} gold, {silver} silver, {copper} copper")
+    cursor.add_2_column_row("Total sell orders:",f"{sells['quantity']}")
+    
+    await ctx.send(embed=embed)
+    
+@gw2.command()
+async def masteries (ctx):
+    return
+#Moderation stuff...
+@bot.group()
+async def mod(ctx):
+    if ctx.invoked_subcommand is None:
+        await ctx.send("Invalid function name. Please try something else.")
+
+@mod.command()
+async def pool(ctx):
+    return
+
 bot.run(TOKEN)
