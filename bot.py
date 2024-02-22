@@ -1,7 +1,6 @@
-import os, discord, re, requests
+import os, discord,requests
 from dotenv import load_dotenv
 from discord.ext import commands
-from forex_python.converter import CurrencyRates
 from function import *
 
 load_dotenv()
@@ -40,6 +39,7 @@ async def gw2(ctx):
 async def help(ctx):
     embed = discord.Embed(title="Help pannel",description="Syntax of all",color=discord.Color.red())
     cursor = EmbedCursor(embed=embed)
+    #GW2 help pannel
     cursor.add_row("Command","Syntax","Function",True)
     cursor.add_row("help"," ","Display this message")
     cursor.add_row("reg-api","<name of your choice> <your gw2 api>","Register your gw2 api to a name of your choice")
@@ -47,6 +47,7 @@ async def help(ctx):
     cursor.add_row("get-stats","<name of your registered api>","Get ingame user stat")
     cursor.add_row("recipe","<item name>","Get recipe or mystic forge recipe or both")
     cursor.add_row("price","<item name>","Get trading post price")
+    
     await ctx.send(embed=embed)
         
 @gw2.command(name="reg-api")
@@ -87,16 +88,49 @@ async def get_stats(ctx,name):
                 return None
         except:
             return None
+    
+    def get_user_leggy(name):
+        job = Mongo()
+        
+        data = job.read_user_api("gw2","api-key",name)
+        for value in data: key = value['key']
+        
+        leggy_url = 'https://api.guildwars2.com/v2/account/legendaryarmory'
+        headers = {'Authorization': f'Bearer {key}'}
+        response = requests.get(leggy_url, headers=headers)
+        
+        leggys_data = response.json()
+        
+        return leggys_data
+    
+    def get_item_name(item_id):
+        job = Mongo()
+        
+        return job.get_item_name("gw2_items",f"{item_id}")
 
     data = get_user_info(name)
     account_name, account_time, account_fractal, account_wvw = data
     account_age = Calculator().display_time(account_time)
+    leg_data = get_user_leggy(name)
     
     if data:
         embed = discord.Embed(title=f"User: {account_name}",color=discord.Color.green())
-        embed.add_field(name="Playtime:",value=f"{account_age}",inline=False)
-        embed.add_field(name="Fractal level:",value=f"{account_fractal}",inline=False)
-        embed.add_field(name="WvW rank:",value=f"{account_wvw}",inline=False)
+        cursor = EmbedCursor(embed)
+        cursor.add_2_column_row("Playtime:",f"{account_age}")
+        cursor.add_2_column_row("Fractal level:",f"{account_fractal}")
+        cursor.add_2_column_row("WvW rank:",f"{account_wvw}")
+        
+        if leg_data:
+            
+            leg_list = []
+
+            for i in leg_data:
+                leg_data = i['id']
+                leg_name = get_item_name(f"{leg_data}")
+                leg_list.append(leg_name)
+            
+            cursor.add_2_column_row("Legendaries:",f"{leg_list}")
+    
         await ctx.send(embed=embed)
     else:
         await ctx.send("No data found, have you register your api yet?")
@@ -224,12 +258,13 @@ async def masteries (ctx):
     return
 #Moderation stuff...
 @bot.group()
+
 async def mod(ctx):
     if ctx.invoked_subcommand is None:
         await ctx.send("Invalid function name. Please try something else.")
 
-@mod.command()
-async def pool(ctx):
-    return
+@mod.command(name="get-code")
+async def get_comet_github_link(ctx):
+    await ctx.send("https://github.com/Needalife/Comet")
 
 bot.run(TOKEN)

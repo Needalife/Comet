@@ -1,4 +1,4 @@
-import operator,os,pymongo, json, discord,requests
+import os,pymongo,requests
 from dotenv import load_dotenv
 
 load_dotenv()
