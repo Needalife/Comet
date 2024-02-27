@@ -60,6 +60,7 @@ async def reg_api_key(ctx, name, key):
     await ctx.send(f"Finish registering {name} api key")
 
 @gw2.command(name='del-api')
+@commands.has_role("Mod")
 async def del_api_key(ctx, user_name):
     def delete_user_api(name):
         job = Mongo()
@@ -294,7 +295,6 @@ async def posts(ctx):
         cursor.add_row(thread.jump_url,user.mention,thread.parent)
     
     await ctx.send(embed=embed)
-
     
 @bot.group()
 async def post(ctx):
