@@ -37,7 +37,7 @@ async def gw2(ctx):
 
 @gw2.command()
 async def help(ctx):
-    embed = discord.Embed(title="Help pannel",description="Syntax of all",color=discord.Color.red())
+    embed = discord.Embed(title="Help pannel",description="GW2 commands",color=discord.Color.red())
     cursor = EmbedCursor(embed=embed)
     #GW2 help pannel
     cursor.add_row("Command","Syntax","Function",True)
@@ -258,13 +258,56 @@ async def masteries (ctx):
     return
 #Moderation stuff...
 @bot.group()
+@commands.has_role("Mod")
 async def mod(ctx):
     if ctx.invoked_subcommand is None:
-        await ctx.send("Invalid function name. Please try something else.")
+        await ctx.send("Invalid function name, do !mod help.")
+        
+@mod.command(name="help")
+async def help(ctx):
+    embed = discord.Embed(title="Help pannel",description="Moderators Only",color=discord.Color.blurple())
+    cursor = EmbedCursor(embed=embed)
+    #Moderator help pannel
+    cursor.add_row("Command","Syntax","Function",True)
+    cursor.add_row("help"," ","Display this message")
+    #add more moderator commands
+    cursor.add_row("posts"," ","Get a list of post on the server, do !post help for more post commands")
+    cursor.add_row("get-code"," ","Get COMET code on git repo, contact Vally for invite")
+    
+    await ctx.send(embed=embed)
 
 @mod.command(name="get-code")
-@commands.has_role("Mod")
 async def get_comet_github_link(ctx):
     await ctx.send("https://github.com/Needalife/Comet")
+    
+@mod.command(name="posts")
+async def posts(ctx):
+    guild = ctx.guild
+    threads = guild.threads
+    
+    embed = discord.Embed(title="Post list",color=discord.Color.purple())
+    cursor = EmbedCursor(embed=embed)
+    
+    cursor.add_row("Post","OP's","Forum")
+    for thread in threads:
+        user = await bot.fetch_user(thread.owner_id)
+        cursor.add_row(thread.jump_url,user.mention,thread.parent)
+    
+    await ctx.send(embed=embed)
 
+@bot.group()
+async def post(ctx):
+    if ctx.invoked_subcommand is None:
+        await ctx.send("Invalid post function, do !post help.")
+
+@mod.command()
+async def help(ctx):
+    embed = discord.Embed(title="Help pannel",description="Post commands",color=discord.Color.blurple())
+    cursor = EmbedCursor(embed=embed)
+    cursor.add_row("Command","Syntax","Function",True)
+    cursor.add_row("help"," ","Display this message")
+    #Post commands
+    
+    await ctx.send(embed=embed)
+    
 bot.run(TOKEN)
