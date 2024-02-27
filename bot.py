@@ -1,7 +1,7 @@
 import os, discord,requests
 from dotenv import load_dotenv
 from discord.ext import commands
-from function import *
+from utils import *
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -300,7 +300,7 @@ async def post(ctx):
     if ctx.invoked_subcommand is None:
         await ctx.send("Invalid post function, do !post help.")
 
-@mod.command()
+@post.command()
 async def help(ctx):
     embed = discord.Embed(title="Help pannel",description="Post commands",color=discord.Color.blurple())
     cursor = EmbedCursor(embed=embed)
