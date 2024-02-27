@@ -18,16 +18,16 @@ To add COMET to your Discord server, follow these steps:
 1. **Invite COMET**: Use the invite link provided to add COMET to your Discord server.
 2. **Configure Settings**: Customize COMET's settings and permissions to fit your server's requirements.
 3. **Start Moderating**: Begin using COMET to monitor user activity, enforce rules, and maintain order in your server.
+4. **Contact Repo Owner**: Most important step, cause only him can invite it to your server :d
 
 ## Usage
 
 Once COMET is added to your server, you can use the following commands to interact with it:
 
 - `!help`: Display a list of available commands and usage instructions.
-- `!track <user>`: Start tracking the activity of a specific user.
-- `!warn <user> <reason>`: Issue a warning to a user for violating server rules.
-- `!mute <user> <duration>`: Mute a user for a specified duration.
-- `!ban <user> <reason>`: Ban a user from the server.
+- `!cal`: Calculate equations
+- `!gw2`: Do !gw2 help for a list of gw2 commands
+- `!mod <help>`: Display a list of mod only commands
 
 For a complete list of commands and their usage, refer to the documentation or use the `!help` command.
 
