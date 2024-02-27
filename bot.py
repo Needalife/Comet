@@ -295,6 +295,7 @@ async def posts(ctx):
     
     await ctx.send(embed=embed)
 
+    
 @bot.group()
 async def post(ctx):
     if ctx.invoked_subcommand is None:

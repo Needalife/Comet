@@ -1,2 +1,39 @@
-# Comet
-Comet discord bot
+# COMET (Casual Online Moderation Enforcement Tracker)
+
+COMET is a Discord bot designed to assist moderators in managing and enforcing rules within their Discord server. With its intuitive features and powerful tools, COMET aims to streamline moderation tasks and ensure a safe and enjoyable environment for all members.
+
+## Features
+
+- **User Activity Tracking**: Monitor user activity and track behavior over time.
+- **Automated Rule Enforcement**: Implement automated actions based on predefined rules.
+- **Incident Reporting**: Receive notifications and logs of incidents requiring moderator intervention.
+- **Customizable Settings**: Tailor COMET's behavior to suit your server's specific needs.
+- **Insightful Analytics**: Gain insights into server activity and user behavior patterns.
+- **Easy Integration**: Simple setup process for adding COMET to your Discord server.
+
+## Installation
+
+To add COMET to your Discord server, follow these steps:
+
+1. **Invite COMET**: Use the invite link provided to add COMET to your Discord server.
+2. **Configure Settings**: Customize COMET's settings and permissions to fit your server's requirements.
+3. **Start Moderating**: Begin using COMET to monitor user activity, enforce rules, and maintain order in your server.
+
+## Usage
+
+Once COMET is added to your server, you can use the following commands to interact with it:
+
+- `!help`: Display a list of available commands and usage instructions.
+- `!track <user>`: Start tracking the activity of a specific user.
+- `!warn <user> <reason>`: Issue a warning to a user for violating server rules.
+- `!mute <user> <duration>`: Mute a user for a specified duration.
+- `!ban <user> <reason>`: Ban a user from the server.
+
+For a complete list of commands and their usage, refer to the documentation or use the `!help` command.
+
+## Contributing
+
+Contributions to COMET are welcome! If you'd like to contribute new features, improvements, or bug fixes, please follow these guidelines:
+
+1. Fork the repository and create a new branch for your changes.
+2. Make your changes 
