@@ -31,9 +31,4 @@ Once COMET is added to your server, you can use the following commands to intera
 
 For a complete list of commands and their usage, refer to the documentation or use the `!help` command.
 
-## Contributing
 
-Contributions to COMET are welcome! If you'd like to contribute new features, improvements, or bug fixes, please follow these guidelines:
-
-1. Fork the repository and create a new branch for your changes.
-2. Make your changes 
