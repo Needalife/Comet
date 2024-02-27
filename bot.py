@@ -258,12 +258,12 @@ async def masteries (ctx):
     return
 #Moderation stuff...
 @bot.group()
-
 async def mod(ctx):
     if ctx.invoked_subcommand is None:
         await ctx.send("Invalid function name. Please try something else.")
 
 @mod.command(name="get-code")
+@commands.has_role("Mod")
 async def get_comet_github_link(ctx):
     await ctx.send("https://github.com/Needalife/Comet")
 
