@@ -17,7 +17,7 @@ class Bot(commands.Bot):
                 extension = file[:-3]
                 try:
                     await self.load_extension(f"cogs.{extension}")
-                    print(f"Loaded extension '{extension}'")
+                    print(f"Loaded extension {extension}")
                 except Exception as e:
                     exception = f"{type(e).__name__}: {e}"
                     print(f"Failed to load extension {extension}\n{exception}")

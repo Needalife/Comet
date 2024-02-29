@@ -18,6 +18,7 @@ class gw2(commands.GroupCog, name="gw2"):
             cursor.add_row("get-stats","<name of your registered api>","Get ingame user stat")
             cursor.add_row("recipe","<item name>","Get recipe or mystic forge recipe or both")
             cursor.add_row("price","<item name>","Get trading post price")
+            cursor.add_row("clover"," ","Mystic Clover WvW one time reward track :D")
             
             await ctx.send(embed=embed)
         
@@ -224,6 +225,40 @@ class gw2(commands.GroupCog, name="gw2"):
         cursor.add_2_column_row("Total sell orders:",f"{sells['quantity']}")
         
         await ctx.send(embed=embed)
+    
+    @gw2.command(name="clover")
+    async def mystic_clover(self,ctx):
+        embed1 = discord.Embed(title="Mystic Clover",description="None repeatable,one time,no reqs",color=discord.Color.green())
+        cursor1 = EmbedCursor(embed=embed1)
+        cursor1.add_row("Track","","Amount",True)
+        cursor1.add_row("Warclaw Reward Track","","7🍀")
+        cursor1.add_row("Silverwastes Reward Track","","7🍀")
+        cursor1.add_row("Verdant Brink Reward Track","","7🍀")
+        cursor1.add_row("Grothmar Valley Reward Track","","9🍀")
+        await ctx.send(embed=embed1)
+        
+        embed2 = discord.Embed(title="Mystic Clover",description="None repeatable,one time,have reqs",color=discord.Color.green())
+        cursor2 = EmbedCursor(embed=embed2)
+        cursor2.add_row("Track","","Amount",True)
+        cursor2.add_row("Shiver Emote Tome Reward Track","","6🍀")
+        cursor2.add_row("Auric Basin Reward Track","","7🍀")
+        cursor2.add_row("Tangled Depths Reward Track","","7🍀")
+        cursor2.add_row("Bjora Marches Reward Track","","11🍀")
+        cursor2.add_row("Drizzle Coast Reward Track","","14🍀")
+        await ctx.send(embed=embed2)
+        
+        embed3 = discord.Embed(title="Mystic Clover",description="First completion",color=discord.Color.green())
+        cursor3 = EmbedCursor(embed=embed3)
+        cursor3.add_row("Track","","Amount",True)
+        cursor3.add_row("Crystal Desert Reward Track","","7🍀")
+        cursor3.add_row("End of Dragons Reward Track","","7🍀")
+        cursor3.add_row("Long-Lost Tahkayun Weapons Reward Track","","7🍀")
+        cursor3.add_row("Xunlai Customer Loyalty Perks Program","","7🍀")
+        await ctx.send(embed=embed3)
+        
+    @gw2.command()
+    async def vault(self,ctx,user_name):
+        pass
     
 async def setup(bot:commands.Bot):
     await bot.add_cog(gw2(bot))
