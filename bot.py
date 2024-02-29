@@ -23,15 +23,18 @@ class Bot(commands.Bot):
                     print(f"Failed to load extension {extension}\n{exception}")
                     
     async def setup_hook(self):
-        print(f'🌠 {self.user.name} has crashes on {GUILD} server!')
-        print(f'discord.py API version: {discord.__version__}')
-        
         await self.load_cogs()
-    
+        print(f'discord.py API version: {discord.__version__}')
+        print(f'🌠 {self.user.name} has crashes on {GUILD} server!')
+        
     async def on_member_join(self,member):
         await member.create_dm()
         await member.dm_channel.send(f'Hi {member.name}, welcome to {GUILD}!')
 
+    async def on_message(self,message):
+        if message == '!get-code':
+            await message.delete(10)
+            
 bot = Bot()
     
 bot.run(TOKEN)

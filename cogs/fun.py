@@ -12,7 +12,7 @@ class Choice(discord.ui.View):
     ) -> None:
         self.value = "heads"
         self.stop()
-
+    
     @discord.ui.button(label="Tails", style=discord.ButtonStyle.blurple)
     async def cancel(
         self, button: discord.ui.Button, interaction: discord.Interaction

@@ -39,7 +39,10 @@ class moderation(commands.GroupCog, name="moderation"):
     @commands.hybrid_command(name="get-code")
     @commands.has_role("Mod")
     async def get_git_repo(self,ctx):
-        await ctx.send("https://github.com/Needalife/Comet")
+        embed = discord.Embed(title="Source code",description="This message will disapear after 10 seconds:",color=discord.Color.dark_magenta())
+        git_repo ="https://github.com/Needalife/Comet" 
+        embed.add_field(name=f"[Git Repo]({git_repo})",value=" ")
+        await ctx.send(embed=embed,delete_after=10.0)
     
     @commands.hybrid_command(name="kick")
     @commands.has_role("Mod")
