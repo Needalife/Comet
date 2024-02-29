@@ -8,7 +8,6 @@ class gw2(commands.GroupCog, name="gw2"):
         
     @commands.group(name="gw2",description="GW2 commands")
     async def gw2(self,ctx):
-        await ctx.message.delete()
         if ctx.invoked_subcommand is None:
             embed = discord.Embed(title="Help pannel",description="GW2 commands",color=discord.Color.red())
             cursor = EmbedCursor(embed=embed)
