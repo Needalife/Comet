@@ -44,6 +44,7 @@ class moderation(commands.GroupCog, name="moderation"):
     @commands.hybrid_command(name="kick")
     @commands.has_role("Mod")
     async def kick(self, ctx, user: discord.User, *, reason: str = "Not specified"):
+
         member = ctx.guild.get_member(user.id) or await ctx.guild.fetch_member(user.id)
         if member.guild_permissions.administrator:
             embed = discord.Embed(description="User has administrator permissions.", color=0xE02B2B)
@@ -69,6 +70,6 @@ class moderation(commands.GroupCog, name="moderation"):
                     color=0xE02B2B,
                 )
                 await ctx.send(embed=embed)
-
+                
 async def setup(bot:commands.Bot):
     await bot.add_cog(moderation(bot))

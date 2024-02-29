@@ -26,8 +26,9 @@ Once COMET is added to your server, you can use the following commands to intera
 
 - `!help`: Display a list of available commands and usage instructions.
 - `!cal`: Calculate equations
-- `!gw2`: Do !gw2 help for a list of gw2 commands
-- `!mod <help>`: Display a list of mod only commands
+- `!gw2`: Display gw2 commands
+- `!mod`: Display a list of mod only commands
+- `!coin-flip`: Challenge the bot to a battle of coin flip
 
 For a complete list of commands and their usage, refer to the documentation or use the `!help` command.
 
