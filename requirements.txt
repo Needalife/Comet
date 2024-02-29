@@ -1,6 +1,4 @@
 discord.py==2.3.2
-forex_python==1.8
-pandas==2.2.0
 pymongo==4.6.1
 python-dotenv==1.0.1
 Requests==2.31.0
