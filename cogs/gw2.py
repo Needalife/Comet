@@ -8,6 +8,7 @@ class gw2(commands.GroupCog, name="gw2"):
         
     @commands.group(name="gw2",description="GW2 commands")
     async def gw2(self,ctx):
+        await ctx.message.delete()
         if ctx.invoked_subcommand is None:
             embed = discord.Embed(title="Help pannel",description="GW2 commands",color=discord.Color.red())
             cursor = EmbedCursor(embed=embed)
@@ -28,9 +29,13 @@ class gw2(commands.GroupCog, name="gw2"):
             job = Mongo()
             job.write_user_api("gw2","api-key",name,api_key)
         
-        register_user_api(name, key)
-        await ctx.send(f"Finish registering {name} api key")
-    
+        try:
+            register_user_api(name, key)
+            await ctx.send(f"Finish registering {name} api key")
+            await ctx.message.delete()
+        except discord.NotFound:
+            pass
+        
     @gw2.command(name='del-api')
     @commands.has_role("Mod")
     async def del_api_key(self,ctx, user_name):
@@ -38,8 +43,12 @@ class gw2(commands.GroupCog, name="gw2"):
             job = Mongo()
             job.delete_user_api("gw2","api-key",name)
         
-        delete_user_api(user_name)
-        await ctx.send(f"Finish deleting {user_name} api key")
+        try:
+            delete_user_api(user_name)
+            await ctx.send(f"Finish deleting {user_name} api key")
+            await ctx.message.delete()
+        except discord.NotFound:
+            pass
     
     @gw2.command(name="get-stats")
     async def get_stats(self,ctx,name):
@@ -107,7 +116,7 @@ class gw2(commands.GroupCog, name="gw2"):
             await ctx.send(embed=embed)
         else:
             await ctx.send("No data found, have you register your api yet?")
-    
+            
     @gw2.command()
     async def recipe(self, ctx, *, name: str):
         def get_item_recipe(name):
@@ -188,7 +197,7 @@ class gw2(commands.GroupCog, name="gw2"):
             else:
                 await ctx.send(embed = to_embed(is_mystic=True,data=mystic_forge_data))
                 await ctx.send(embed = to_embed(is_mystic=False,data=item_recipe_data))
-
+                
     @gw2.command()
     async def price(self,ctx, *, item_name: str):
         def get_id(item_name):
@@ -225,7 +234,7 @@ class gw2(commands.GroupCog, name="gw2"):
         cursor.add_2_column_row("Total sell orders:",f"{sells['quantity']}")
         
         await ctx.send(embed=embed)
-    
+
     @gw2.command(name="clover")
     async def mystic_clover(self,ctx):
         embed1 = discord.Embed(title="Mystic Clover",description="None repeatable,one time,no reqs",color=discord.Color.green())

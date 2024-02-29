@@ -30,10 +30,6 @@ class Bot(commands.Bot):
     async def on_member_join(self,member):
         await member.create_dm()
         await member.dm_channel.send(f'Hi {member.name}, welcome to {GUILD}!')
-
-    async def on_message(self,message):
-        if message == '!get-code':
-            await message.delete(10)
             
 bot = Bot()
     

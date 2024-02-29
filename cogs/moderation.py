@@ -9,6 +9,7 @@ class moderation(commands.GroupCog, name="moderation"):
     @commands.command(name="mod",description="Mods only")
     @commands.has_role("Mod")
     async def mod(self,ctx):
+        await ctx.message.delete()
         if ctx.invoked_subcommand is None:
             embed = discord.Embed(title="Help pannel",description="Moderators Only",color=discord.Color.blurple())
             cursor = EmbedCursor(embed=embed)
@@ -23,6 +24,7 @@ class moderation(commands.GroupCog, name="moderation"):
     @commands.hybrid_command(name="posts")
     @commands.has_role("Mod")
     async def posts(self,ctx):
+        await ctx.message.delete()
         guild = ctx.guild
         threads = guild.threads
         
@@ -39,15 +41,14 @@ class moderation(commands.GroupCog, name="moderation"):
     @commands.hybrid_command(name="get-code")
     @commands.has_role("Mod")
     async def get_git_repo(self,ctx):
-        embed = discord.Embed(title="Source code",description="This message will disapear after 10 seconds:",color=discord.Color.dark_magenta())
-        git_repo ="https://github.com/Needalife/Comet" 
-        embed.add_field(name=f"[Git Repo]({git_repo})",value=" ")
+        await ctx.message.delete()
+        git_repo ="https://github.com/Needalife/Comet"
+        embed = discord.Embed(title="Source code",description="This message will disapear after 10 seconds",color=discord.Color.dark_magenta(),url=f"{git_repo}")
         await ctx.send(embed=embed,delete_after=10.0)
     
     @commands.hybrid_command(name="kick")
     @commands.has_role("Mod")
     async def kick(self, ctx, user: discord.User, *, reason: str = "Not specified"):
-
         member = ctx.guild.get_member(user.id) or await ctx.guild.fetch_member(user.id)
         if member.guild_permissions.administrator:
             embed = discord.Embed(description="User has administrator permissions.", color=0xE02B2B)
