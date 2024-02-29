@@ -257,7 +257,7 @@ class gw2(commands.GroupCog, name="gw2"):
         await ctx.send(embed=embed3)
         
     @gw2.command()
-    async def vault(self,ctx,user_name):
+    async def web(self,ctx,user_name):
         pass
     
 async def setup(bot:commands.Bot):

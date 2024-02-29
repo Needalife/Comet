@@ -41,5 +41,34 @@ class moderation(commands.GroupCog, name="moderation"):
     async def get_git_repo(self,ctx):
         await ctx.send("https://github.com/Needalife/Comet")
     
+    @commands.hybrid_command(name="kick")
+    @commands.has_role("Mod")
+    async def kick(self, ctx, user: discord.User, *, reason: str = "Not specified"):
+        member = ctx.guild.get_member(user.id) or await ctx.guild.fetch_member(user.id)
+        if member.guild_permissions.administrator:
+            embed = discord.Embed(description="User has administrator permissions.", color=0xE02B2B)
+            await ctx.send(embed=embed)
+        else:
+            try:
+                embed = discord.Embed(
+                    description=f"**{member}** was kicked by **{ctx.author}**!",
+                    color=0xBEBEFE,
+                )
+                embed.add_field(name="Reason:", value=reason)
+                await ctx.send(embed=embed)
+                try:
+                    await member.send(
+                        f"You were kicked by **{ctx.author}** from **{ctx.guild.name}**!\nReason: {reason}"
+                    )
+                except:
+                    pass
+                await member.kick(reason=reason)
+            except:
+                embed = discord.Embed(
+                    description="An error occurred while trying to kick the user. Make sure my role is above the role of the user you want to kick.",
+                    color=0xE02B2B,
+                )
+                await ctx.send(embed=embed)
+
 async def setup(bot:commands.Bot):
     await bot.add_cog(moderation(bot))
