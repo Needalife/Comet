@@ -1,5 +1,6 @@
-import os,pymongo,requests
+import os,pymongo,requests,datetime
 from dotenv import load_dotenv
+from datetime import timezone
 
 load_dotenv()
 
@@ -37,7 +38,7 @@ class Calculator:
         return gold, silver_remainder, copper_remainder
 
 class Mongo:
-    def __init__(self,uri=None,database=None):
+    def __init__(self,database=None):
         self.uri = os.getenv('mongo_uri')
         self.client = pymongo.MongoClient(self.uri)
         self.database = database
@@ -95,6 +96,26 @@ class Mongo:
         
         return item_name
     
+    def store_link(self,username,title,link):
+        database = self.client[f"{self.database}"]
+        collection = database['link']
+        current_time = datetime.datetime.now(timezone.utc)
+        utc_time = current_time.replace(tzinfo=timezone.utc)
+        
+        user_dict = {"user" : f"{username}", 
+                     "title" : f"{title}", 
+                     "link" : f"{link}", 
+                     "timestamp" : f"{utc_time}"}
+        
+        collection.insert_one(user_dict)
+    
+    def get_links(self,username):
+        database = self.client[f"{self.database}"]
+        collection = database['link']
+        query = {"user":f"{username}"}
+        data = [i for i in collection.find(query)]
+        return data
+    
     def get_item_id(self, database, item_name):
         self.database = self.client[f"{database}"]
         collection = self.database["items_name"]
@@ -117,7 +138,8 @@ class Mongo:
         icon = data['icon']
         
         return icon
-        
+    
+
 class EmbedCursor:
     def __init__(self,embed):
         self.embed = embed
@@ -136,7 +158,3 @@ class EmbedCursor:
         self.embed.add_field(name=f"{category}",value=" ", inline=True)
         self.embed.add_field(name="",value=f"{value}", inline=True)
         self.embed.add_field(name="",value=f" ", inline=True)
-
-
-        
-        
