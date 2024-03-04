@@ -38,16 +38,13 @@ class gw2(commands.GroupCog, name="gw2"):
     @gw2.command(name='del-api')
     @commands.has_role("Mod")
     async def del_api_key(self,ctx, user_name):
-        def delete_user_api(name):
+        def delete_user_doc(name):
             job = Mongo()
-            job.delete_user_api("gw2","api-key",name)
-        
-        try:
-            delete_user_api(user_name)
-            await ctx.send(f"Finish deleting {user_name} api key")
-            await ctx.message.delete()
-        except discord.NotFound:
-            pass
+            job.delete_user_document("gw2","api-key",name)
+
+        delete_user_doc(user_name)
+        await ctx.send(f"Finish deleting {user_name} api key")
+        await ctx.message.delete()
     
     @gw2.command(name="get-stats")
     async def get_stats(self,ctx,name):

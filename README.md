@@ -29,6 +29,7 @@ Once COMET is added to your server, you can use the following commands to intera
 - `!gw2`: Display gw2 commands
 - `!mod`: Display a list of mod only commands
 - `!coin-flip`: Challenge the bot to a battle of coin flip
+- `!storage`: Display a list of option to store important links
 
 For a complete list of commands and their usage, refer to the documentation or use the `!help` command.
 

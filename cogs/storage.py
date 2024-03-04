@@ -7,8 +7,23 @@ class storage(commands.Cog, name="storage"):
     def __init__(self, bot: commands.Bot) :
         self.bot = bot
     
-    @commands.command(name="store",description="store important links")
+    @commands.command(name="storage",description="store commands")
+    async def storage(self,ctx):
+        if ctx.invoked_subcommand is None:
+            embed = discord.Embed(title="Help pannel",description="store commands",color=discord.Color.blurple())
+            cursor = EmbedCursor(embed=embed)
+
+            cursor.add_row("Command","Syntax","Function",True)
+
+            cursor.add_row("store","<link name> <link>","Store a link of your choice")
+            cursor.add_row("links"," ","View the links you have store")
+            cursor.add_row("del-link","<link name>","Delete link of your choice")
+            
+            await ctx.send(embed=embed)            
+    
+    @commands.hybrid_command(name="store",description="store important links")
     async def store(self,ctx,name: str,link: str):
+            
         await ctx.message.delete()
         
         username = ctx.author.name
@@ -35,10 +50,14 @@ class storage(commands.Cog, name="storage"):
         
         await ctx.send(embed=embed)
     
-    @commands.hybrid_command(name="user-link",description="get user link, only mod can do this command")
-    @commands.has_role("Mod")
-    async def get_user_link(self,ctx):
-        pass
-    
+    @commands.group(name="del-link",description="delete your saved link")
+    async def del_personal_link(self,ctx,link_name):
+        if ctx.message != 'all':
+            user = ctx.author.name
+            job = Mongo()
+            job.delete_user_document('link','links',user,filter_is="title",filter_content=f"{link_name}")
+            
+            await ctx.send(f"Finish deleting {link_name}",delete_after=5.0)
+        
 async def setup(bot:commands.Bot):
     await bot.add_cog(storage(bot))

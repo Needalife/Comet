@@ -47,21 +47,25 @@ class Mongo:
         self.database = self.client[f"{database}"]
         collection = self.database[f"{collection}"]
         
-        user_dict = {"username": f"{username}", "key": f"{userkey}"}
+        user_dict = {"user": f"{username}", "key": f"{userkey}"}
         collection.insert_one(user_dict)
     
-    def delete_user_api(self,collection,database,username):
+    def delete_user_document(self,collection,database,username,filter_is=None,filter_content=None):
         self.database = self.client[f"{database}"]
         collection = self.database[f"{collection}"]
         
-        user_dict = {"username": f"{username}"}
-        collection.delete_one(user_dict)
-    
+        if filter_is is None:
+            user_dict = {"user": f"{username}"}
+            collection.delete_one(user_dict)
+        elif filter_is == "title":
+            user_dict = {"user": f"{username}", "title": f"{filter_content}"}
+            collection.delete_one(user_dict)
+            
     def read_user_api(self, collection, database, username):
         self.database = self.client[f"{database}"]
         collection = self.database[f"{collection}"]
         
-        user_dict = {"username": f"{username}"}
+        user_dict = {"user": f"{username}"}
         return collection.find(user_dict)
 
     def get_recipe(self,database,item_name):
@@ -115,7 +119,7 @@ class Mongo:
         query = {"user":f"{username}"}
         data = [i for i in collection.find(query)]
         return data
-    
+
     def get_item_id(self, database, item_name):
         self.database = self.client[f"{database}"]
         collection = self.database["items_name"]
