@@ -1,4 +1,4 @@
-import os,pymongo,requests,datetime
+import os,pymongo,requests,datetime,math
 from dotenv import load_dotenv
 from datetime import timezone
 
@@ -8,16 +8,29 @@ class Converter:
     def __init__(self,expression=None):
         self.expression = expression
     
-    def convert_operator(self):
-        users_symbol = {
-            'x':'*',
-            '^':'**',
-            ':':'/'}
+    @staticmethod
+    def replace_key_with_value(dictionary,expression):
+        for key,value in dictionary.items():
+            if key in expression:
+                expression = expression.replace(key,value)
+            
+        return expression
+    
+    def convert(self):
+        user_symbols = {
+            'x': '*',
+            '^': '**',
+            ':': '/',
+            'sin': 'math.sin',
+            'cos': 'math.cos',
+            'tan': 'math.tan',
+            'pi': 'math.pi'
+        }
         
-        for key,value in users_symbol.items():
-            if key in self.expression:
-                self.expression = self.expression.replace(key,value)
-        
+        self.expression = Converter.replace_key_with_value(user_symbols, self.expression)    
+
+    def final(self):
+        self.convert()
         return self.expression
     
     @staticmethod
@@ -46,10 +59,6 @@ class Converter:
         gold = silver // 100
         silver_remainder = silver % 100
         return gold, silver_remainder, copper_remainder
-
-job = Converter("8^2")
-job.convert_operator()
-print(job.expression)
 
 class Mongo:
     def __init__(self,database=None):
