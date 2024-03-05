@@ -45,7 +45,7 @@ class moderation(commands.GroupCog, name="moderation"):
         git_repo ="https://github.com/Needalife/Comet"
         embed = discord.Embed(title="Source code",description="This message will disapear after 10 seconds",color=discord.Color.dark_magenta(),url=f"{git_repo}")
         await ctx.send(embed=embed,delete_after=10.0)
-    
+        
     @commands.hybrid_command(name="kick")
     @commands.has_role("Mod")
     async def kick(self, ctx, user: discord.User, *, reason: str = "Not specified"):
@@ -74,6 +74,6 @@ class moderation(commands.GroupCog, name="moderation"):
                     color=0xE02B2B,
                 )
                 await ctx.send(embed=embed)
-                
+              
 async def setup(bot:commands.Bot):
     await bot.add_cog(moderation(bot))

@@ -4,12 +4,22 @@ from datetime import timezone
 
 load_dotenv()
 
-class Calculator:
-    def __init__(self,operator=None,x=None,y=None):
-        self.operator = operator
-        self.x = x
-        self.y = y
-
+class Converter:
+    def __init__(self,expression=None):
+        self.expression = expression
+    
+    def convert_operator(self):
+        users_symbol = {
+            'x':'*',
+            '^':'**',
+            ':':'/'}
+        
+        for key,value in users_symbol.items():
+            if key in self.expression:
+                self.expression = self.expression.replace(key,value)
+        
+        return self.expression
+    
     @staticmethod
     def display_time(seconds, granularity=2):
         intervals = (
@@ -37,6 +47,10 @@ class Calculator:
         silver_remainder = silver % 100
         return gold, silver_remainder, copper_remainder
 
+job = Converter("8^2")
+job.convert_operator()
+print(job.expression)
+
 class Mongo:
     def __init__(self,database=None):
         self.uri = os.getenv('mongo_uri')
@@ -57,8 +71,8 @@ class Mongo:
         if filter_is is None:
             user_dict = {"user": f"{username}"}
             collection.delete_one(user_dict)
-        elif filter_is == "title":
-            user_dict = {"user": f"{username}", "title": f"{filter_content}"}
+        else:
+            user_dict = {"user": f"{username}", f"{filter_is}" : f"{filter_content}"}
             collection.delete_one(user_dict)
             
     def read_user_api(self, collection, database, username):
@@ -143,7 +157,6 @@ class Mongo:
         
         return icon
     
-
 class EmbedCursor:
     def __init__(self,embed):
         self.embed = embed
@@ -162,3 +175,4 @@ class EmbedCursor:
         self.embed.add_field(name=f"{category}",value=" ", inline=True)
         self.embed.add_field(name="",value=f"{value}", inline=True)
         self.embed.add_field(name="",value=f" ", inline=True)
+

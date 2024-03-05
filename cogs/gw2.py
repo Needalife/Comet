@@ -88,7 +88,7 @@ class gw2(commands.GroupCog, name="gw2"):
 
         data = get_user_info(name)
         account_name, account_time, account_fractal, account_wvw = data
-        account_age = Calculator().display_time(account_time)
+        account_age = Converter().display_time(account_time)
         leg_data = get_user_leggy(name)
         
         if data:
@@ -205,7 +205,7 @@ class gw2(commands.GroupCog, name="gw2"):
             return job.get_item_icon(item_name)
         
         def get_currency(copper):
-            job = Calculator()
+            job = Converter()
             return job.display_currency(copper)
         
         api_endpoint = f"https://api.guildwars2.com/v2/commerce/prices/{get_id(item_name)}"

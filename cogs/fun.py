@@ -75,6 +75,6 @@ class fun(commands.Cog, name="fun"):
             else:
                 embed = discord.Embed(description=f"{user2.display_name} wins! 🪙")
                 await message.edit(embed=embed, view = None, content=None)
-
+    
 async def setup(bot:commands.Bot):
     await bot.add_cog(fun(bot))

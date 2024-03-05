@@ -50,7 +50,7 @@ class storage(commands.Cog, name="storage"):
         
         await ctx.send(embed=embed)
     
-    @commands.group(name="del-link",description="delete your saved link")
+    @commands.command(name="del-link",description="delete your saved link")
     async def del_personal_link(self,ctx,link_name):
         if ctx.message != 'all':
             user = ctx.author.name
@@ -58,6 +58,6 @@ class storage(commands.Cog, name="storage"):
             job.delete_user_document('link','links',user,filter_is="title",filter_content=f"{link_name}")
             
             await ctx.send(f"Finish deleting {link_name}",delete_after=5.0)
-        
+    
 async def setup(bot:commands.Bot):
     await bot.add_cog(storage(bot))
