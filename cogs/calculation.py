@@ -13,7 +13,7 @@ def country_to_code(country):
     with open(currency_path,'r',encoding='utf-8') as file:
         data = json.load(file)
     
-    currency_name_to_code = {entry['country']: entry['code'] for entry in data}
+    currency_name_to_code = {entry['country']: key for key,entry in data.items()}
     
     if country in currency_name_to_code:
         return currency_name_to_code[country]
