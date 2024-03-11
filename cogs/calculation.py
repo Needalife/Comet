@@ -26,10 +26,6 @@ class calculation(commands.Cog, name="math"):
         
     @commands.command(name="cal",description="calulate equations")
     async def cal(self,ctx,*,expression: str):
-        if ctx.invoked_subcommand is None:
-            await ctx.send("Please enter an equation!")
-            return
-        
         try:
             modified_expression = Converter(expression).final()
             result = eval(modified_expression)
@@ -40,13 +36,13 @@ class calculation(commands.Cog, name="math"):
         except Exception as e:
             await ctx.send(f"Error calculating equation {expression}, {e}")
     
-    @commands.group(name="convert",description="unit conversion")
+    @commands.group(name="convert",description="convert money, unit measurements")
     async def conversion(self,ctx):
         if ctx.invoked_subcommand is None:
             embed = discord.Embed(title="Conversion Categories",color=discord.Color.dark_blue())
             cursor = EmbedCursor(embed=embed)
             cursor.add_row("Command","Syntax","Function",True)
-            cursor.add_row("money","<country 1> <country 2>","Convert currency of country 1 to 2")
+            cursor.add_row("money","<amount of money> <country 1> <country 2>","Convert currency of country 1 to 2")
             cursor.add_row("unit","<unit 1> <unit 2>","Do unit conversion for unit 1 to 2")
             
             await ctx.send(embed=embed)
@@ -75,9 +71,7 @@ class calculation(commands.Cog, name="math"):
         raw_date = data["time_last_update_utc"]
         formatted_date = " ".join(raw_date.split(" ")[:4])
         
-        embed = discord.Embed(title=f"{code1.upper()} -> {code2.upper()}",color=discord.Color.dark_purple())
-        embed.set_footer(text=f"Power by: exchangerate-api.com")
-        embed.set_thumbnail(url="https://img.stackshare.io/stack/37303/657b34af1c7b9ea45750ae5720351d3735cf17d4.png")
+        embed = discord.Embed(title=f"{code1.upper()} -> {code2.upper()}",color=discord.Color.dark_purple()).set_footer(text=f"Power by: exchangerate-api.com").set_thumbnail(url="https://img.stackshare.io/stack/37303/657b34af1c7b9ea45750ae5720351d3735cf17d4.png")
         cursor = EmbedCursor(embed=embed)
         cursor.add_2_column_row("Conversion rate:",f"{rate}")
         cursor.add_2_column_row("Last update:", f"{formatted_date}")

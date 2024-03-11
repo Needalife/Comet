@@ -2,6 +2,52 @@ import discord
 from utils import *
 from discord.ext import commands
 
+def get_user_info(name):
+            
+    job = Mongo()
+            
+    try:
+        data = job.read_user_api("gw2","api-key",name)
+        for value in data: key = value['key']
+        gw2_url = 'https://api.guildwars2.com/v2/account'
+        headers = {'Authorization': f'Bearer {key}'}
+        response = requests.get(gw2_url, headers=headers)
+                
+        if response.status_code == 200:
+            account_data = response.json()
+            return account_data['name'],account_data['age'],account_data['fractal_level'],account_data['wvw_rank']
+        else:
+            return None
+    except:
+        return None
+        
+def get_user_leggy(name):
+    job = Mongo()
+            
+    data = job.read_user_api("gw2","api-key",name)
+    for value in data: key = value['key']
+            
+    leggy_url = 'https://api.guildwars2.com/v2/account/legendaryarmory'
+    headers = {'Authorization': f'Bearer {key}'}
+    response = requests.get(leggy_url, headers=headers)
+            
+    leggys_data = response.json()
+            
+    return leggys_data
+        
+def get_item_name(item_id):
+    job = Mongo()
+            
+    return job.get_item_name("gw2_items",f"{item_id}")
+
+def get_item_recipe(name):
+    job = Mongo()
+    return job.get_recipe('gw2_items',name)       
+
+def get_icon(item_name):
+    job = Mongo()
+    return job.get_item_icon(item_name)
+
 class gw2(commands.GroupCog, name="gw2"):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -32,6 +78,7 @@ class gw2(commands.GroupCog, name="gw2"):
             register_user_api(name, key)
             await ctx.send(f"Finish registering {name} api key")
             await ctx.message.delete()
+            
         except discord.NotFound:
             pass
         
@@ -43,48 +90,12 @@ class gw2(commands.GroupCog, name="gw2"):
             job.delete_user_document("gw2","api-key",name)
 
         delete_user_doc(user_name)
+        
         await ctx.send(f"Finish deleting {user_name} api key")
         await ctx.message.delete()
     
     @gw2.command(name="get-stats")
     async def get_stats(self,ctx,name):
-        def get_user_info(name):
-            
-            job = Mongo()
-            
-            try:
-                data = job.read_user_api("gw2","api-key",name)
-                for value in data: key = value['key']
-                gw2_url = 'https://api.guildwars2.com/v2/account'
-                headers = {'Authorization': f'Bearer {key}'}
-                response = requests.get(gw2_url, headers=headers)
-                
-                if response.status_code == 200:
-                    account_data = response.json()
-                    return account_data['name'],account_data['age'],account_data['fractal_level'],account_data['wvw_rank']
-                else:
-                    return None
-            except:
-                return None
-        
-        def get_user_leggy(name):
-            job = Mongo()
-            
-            data = job.read_user_api("gw2","api-key",name)
-            for value in data: key = value['key']
-            
-            leggy_url = 'https://api.guildwars2.com/v2/account/legendaryarmory'
-            headers = {'Authorization': f'Bearer {key}'}
-            response = requests.get(leggy_url, headers=headers)
-            
-            leggys_data = response.json()
-            
-            return leggys_data
-        
-        def get_item_name(item_id):
-            job = Mongo()
-            
-            return job.get_item_name("gw2_items",f"{item_id}")
 
         data = get_user_info(name)
         account_name, account_time, account_fractal, account_wvw = data
@@ -114,19 +125,7 @@ class gw2(commands.GroupCog, name="gw2"):
             await ctx.send("No data found, have you register your api yet?")
             
     @gw2.command()
-    async def recipe(self, ctx, *, name: str):
-        def get_item_recipe(name):
-            job = Mongo()
-            return job.get_recipe('gw2_items',name)
-        
-        def get_name(item_id):
-            job = Mongo()
-            return job.get_item_name("gw2_items",item_id)
-        
-        def get_icon(item_name):
-            job = Mongo()
-            return job.get_item_icon(item_name)
-        
+    async def recipe(self, ctx, *, name: str):        
         def to_embed(is_mystic,data):
             if is_mystic == True:
                 output_item = data[0]['name']
@@ -141,7 +140,7 @@ class gw2(commands.GroupCog, name="gw2"):
                 
                 for i in data[0]['ingredients']:
                     item_id = i['id']
-                    item_name = get_name(item_id)
+                    item_name = get_item_name(item_id)
                     item_count = i['count']
                     mystic_embed.add_field(name=f"",value=f"{item_name}", inline=True)
                     mystic_embed.add_field(name="",value=f"{item_count}", inline=True)
@@ -150,7 +149,7 @@ class gw2(commands.GroupCog, name="gw2"):
                 return mystic_embed
             else:
                 output_item_id = data[0]["output_item_id"]
-                output_item = get_name(output_item_id)
+                output_item = get_item_name(output_item_id)
                 output_count = data[0]["output_item_count"]
                 ingame_code = data[0]["chat_link"]
                 disciplines = data[0]["disciplines"]
@@ -164,7 +163,7 @@ class gw2(commands.GroupCog, name="gw2"):
                 
                 for i in data[0]["ingredients"]:
                     item_id = i['item_id']
-                    item_name = get_name(item_id)
+                    item_name = get_item_name(item_id)
                     item_count = i['count']
                     embed.add_field(name=f"",value=f"{item_name}", inline=True)
                     embed.add_field(name="",value=f"{item_count}", inline=True)

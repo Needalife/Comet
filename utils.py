@@ -141,6 +141,7 @@ class Mongo:
         collection = database['link']
         query = {"user":f"{username}"}
         data = [i for i in collection.find(query)]
+        
         return data
 
     def get_item_id(self, database, item_name):
