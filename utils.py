@@ -59,6 +59,16 @@ class Converter:
         gold = silver // 100
         silver_remainder = silver % 100
         return gold, silver_remainder, copper_remainder
+    
+    @staticmethod
+    def displayBytes(byteSize):
+        if byteSize == 0:
+            return "0B"
+        size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+        i = int(math.floor(math.log(byteSize, 1024)))
+        p = math.pow(1024, i)
+        s = round(byteSize / p, 2)
+        return "%s %s" % (s, size_name[i])
 
 class Mongo:
     def __init__(self,database=None):

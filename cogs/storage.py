@@ -66,12 +66,18 @@ class storage(commands.Cog, name="storage"):
     async def db(self,ctx):
         job = Mongo()
         embed = discord.Embed(title="Comet DB",color=discord.Color.green()).set_footer(text="Power by: MongoDB").set_thumbnail(url="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2ZYtHv2OLXmthRPbkmENZRXuqBVDwlsrZ1A&usqp=CAU")
+        final_size = 0
+        
         for database in job.getAllDatabase():
             collections = job.getAllCollection(database)
             size_info = job.getSize(database=database, collections=collections)
-            formatted_size_info = "\n".join([f"{key}: {value}" for key, value in size_info.items()])
-            embed.add_field(name=database, value=formatted_size_info, inline=False)
-
+            total_size = sum(size_info.values())
+            final_size += total_size
+            formatted_size_info = "\n".join([f"{key}: {Converter.displayBytes(value)}" for key, value in size_info.items()])
+            embed.add_field(name=f"{database} {Converter.displayBytes(total_size)}" , value=f"{formatted_size_info}", inline=False)
+        
+        embed.description = f"{Converter.displayBytes(final_size)} cluster"
+        
         await ctx.send(embed=embed)
 
 async def setup(bot:commands.Bot):
