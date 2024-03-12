@@ -99,7 +99,7 @@ class gw2(commands.GroupCog, name="gw2"):
 
         data = get_user_info(name)
         account_name, account_time, account_fractal, account_wvw = data
-        account_age = Converter().display_time(account_time)
+        account_age = Converter().displayTime(account_time)
         leg_data = get_user_leggy(name)
         
         if data:
@@ -203,10 +203,6 @@ class gw2(commands.GroupCog, name="gw2"):
             job = Mongo()
             return job.get_item_icon(item_name)
         
-        def get_currency(copper):
-            job = Converter()
-            return job.display_currency(copper)
-        
         api_endpoint = f"https://api.guildwars2.com/v2/commerce/prices/{get_id(item_name)}"
         response = requests.get(api_endpoint)
         data = response.json()
@@ -217,13 +213,13 @@ class gw2(commands.GroupCog, name="gw2"):
         embed = discord.Embed(title=f"{item_name}",color=discord.Color.gold())
         embed.set_thumbnail(url=f"{get_icon(item_name)}")
         cursor = EmbedCursor(embed=embed)
-        
-        gold, silver, copper = get_currency(buys['unit_price'])
+                                
+        gold, silver, copper = Converter().displayCurrency(buys['unit_price'])
         cursor.add_row("Buy Order"," "," ",True)
         cursor.add_2_column_row("Highest buy order:",f"{gold} gold, {silver} silver, {copper} copper")
         cursor.add_2_column_row("Total buy orders:",f"{buys['quantity']}")
         
-        gold, silver, copper = get_currency(sells['unit_price'])
+        gold, silver, copper = Converter().displayCurrency(sells['unit_price'])
         cursor.add_row("Sell Order"," "," ",True)
         cursor.add_2_column_row("Lowest sell order:",f"{gold} gold, {silver} silver, {copper} copper")
         cursor.add_2_column_row("Total sell orders:",f"{sells['quantity']}")

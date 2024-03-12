@@ -34,7 +34,7 @@ class Converter:
         return self.expression
     
     @staticmethod
-    def display_time(seconds, granularity=2):
+    def displayTime(seconds, granularity=2):
         intervals = (
             ('weeks', 604800),  
             ('days', 86400),    
@@ -53,7 +53,7 @@ class Converter:
         return ', '.join(result[:granularity])
     
     @staticmethod
-    def display_currency(copper):
+    def displayCurrency(copper):
         silver = copper // 100
         copper_remainder = copper % 100
         gold = silver // 100
