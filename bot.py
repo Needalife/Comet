@@ -32,5 +32,5 @@ class Bot(commands.Bot):
         await member.dm_channel.send(f'Hi {member.name}, welcome to {GUILD}!')
             
 bot = Bot()
-    
+                    
 bot.run(TOKEN)
