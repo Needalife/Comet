@@ -1,5 +1,7 @@
 from discord.ext import commands
-from utils import *
+from utils.Mongo import *
+from utils.Converter import *
+from utils.EmbedCursor import *
 from datetime import datetime
 import discord
 

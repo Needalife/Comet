@@ -1,5 +1,6 @@
 from discord.ext import commands
-from utils import Converter,EmbedCursor
+from utils.Converter import Converter
+from utils.EmbedCursor import EmbedCursor
 from dotenv import load_dotenv
 #do NOT remove math, its require for the eval() function
 import discord,math,os,json,requests

@@ -1,5 +1,5 @@
 import discord
-from utils import *
+from utils.EmbedCursor import *
 from discord.ext import commands
 
 class moderation(commands.GroupCog, name="moderation"):

@@ -1,5 +1,7 @@
-import discord
-from utils import *
+import discord,requests
+from utils.Mongo import *
+from utils.EmbedCursor import *
+from utils.Converter import *
 from discord.ext import commands
 
 def get_user_info(name):
