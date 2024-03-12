@@ -83,6 +83,10 @@ class calculation(commands.Cog, name="math"):
     async def unit(self,ctx):
         pass
     
+    @commands.command(name="bit")
+    async def bit(self,ctx):
+        pass
+    
 async def setup(bot:commands.Bot):
     await bot.add_cog(calculation(bot))
 

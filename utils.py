@@ -51,7 +51,7 @@ class Converter:
                     name = name.rstrip('s')
                 result.append("{} {}".format(value, name))
         return ', '.join(result[:granularity])
-
+    
     @staticmethod
     def display_currency(copper):
         silver = copper // 100
@@ -135,7 +135,7 @@ class Mongo:
                      "timestamp" : f"{utc_time}"}
         
         collection.insert_one(user_dict)
-    
+
     def get_links(self,username):
         database = self.client[f"{self.database}"]
         collection = database['link']
@@ -167,6 +167,23 @@ class Mongo:
         
         return icon
     
+    def getAllDatabase(self):
+        db = self.client.list_database_names()
+        #get all non-system datbases!
+        return [i for i in db if i not in ['local','admin']]
+    
+    def getAllCollection(self,database):
+        database = self.client[f"{database}"]
+        filter = {"name": {"$regex": r"^(?!system\.)"}}
+        return database.list_collection_names(filter=filter)
+    
+    def getSize(self,database,collections:list):
+        db = self.client[f"{database}"]
+        colSize = [db.command("collstats",collection)['size'] for collection in collections] 
+        col = [i for i in collections]
+        
+        return {k:v for (k,v) in zip(col,colSize)}
+        
 class EmbedCursor:
     def __init__(self,embed):
         self.embed = embed

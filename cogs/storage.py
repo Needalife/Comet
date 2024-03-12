@@ -36,20 +36,22 @@ class storage(commands.Cog, name="storage"):
     async def get_personal_link(self,ctx):
         
         user = ctx.author.name
+        
         job = Mongo(database='links')
         data = job.get_links(user)
         
-        embed = discord.Embed(title=f"{user} links",color=discord.Color.green())
+        embed = discord.Embed(title=f"{user} links",color=discord.Color.green()).set_thumbnail(url=ctx.author.display_avatar)
         cursor = EmbedCursor(embed)
         
         cursor.add_row("Description","Link","Time added",True)
+        
         for entry in data:
             current_time = datetime.strptime(entry['timestamp'],"%Y-%m-%d %H:%M:%S.%f%z")
             format_time = current_time.strftime("%B %d, %Y")
             cursor.add_row(f"{entry['title']}",f"{entry['link']}",f"{format_time}")
-        
+
         await ctx.send(embed=embed)
-    
+
     @commands.command(name="del-link",description="delete your saved link")
     async def del_personal_link(self,ctx,link_name):
         if ctx.message != 'all':
@@ -59,5 +61,18 @@ class storage(commands.Cog, name="storage"):
             
             await ctx.send(f"Finish deleting {link_name}",delete_after=5.0)
     
+    @commands.command(name="db")
+    @commands.has_role("Mod")
+    async def db(self,ctx):
+        job = Mongo()
+        embed = discord.Embed(title="Comet DB",color=discord.Color.green()).set_footer(text="Power by: MongoDB").set_thumbnail(url="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2ZYtHv2OLXmthRPbkmENZRXuqBVDwlsrZ1A&usqp=CAU")
+        for database in job.getAllDatabase():
+            collections = job.getAllCollection(database)
+            size_info = job.getSize(database=database, collections=collections)
+            formatted_size_info = "\n".join([f"{key}: {value}" for key, value in size_info.items()])
+            embed.add_field(name=database, value=formatted_size_info, inline=False)
+
+        await ctx.send(embed=embed)
+
 async def setup(bot:commands.Bot):
     await bot.add_cog(storage(bot))
