@@ -75,10 +75,16 @@ class gw2(commands.GroupCog, name="gw2"):
             if leg_data:
                 
                 leg_list = []
-
+                
                 for i in leg_data:
                     leg_data = i['id']
-                    leg_name = getItemName(f"{leg_data}")
+                    
+                    #update obsidian armor into database
+                    try:
+                        leg_name = getItemName(f"{leg_data}")
+                    except Exception:
+                        leg_name = "Item_to_be_added"
+                        
                     leg_list.append(leg_name)
                 
                 cursor.add_2_column_row("Legendaries:",f"{leg_list}")
