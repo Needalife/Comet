@@ -75,8 +75,8 @@ class storage(commands.Cog, name="storage"):
             size_info = job.getSize(database=database, collections=collections)
             total_size = sum(size_info.values())
             final_size += total_size
-            formatted_size_info = "\n".join([f"{key}: {Converter.displayBytes(value)}" for key, value in size_info.items()])
-            embed.add_field(name=f"{database} {Converter.displayBytes(total_size)}" , value=f"{formatted_size_info}", inline=False)
+            formatted_size_info = "\n".join([f"_{key}: {Converter.displayBytes(value)}" for key, value in size_info.items()])
+            embed.add_field(name=f"{database}({Converter.displayBytes(total_size)})" , value=f"{formatted_size_info}", inline=False)
         
         embed.description = f"{Converter.displayBytes(final_size)} cluster"
         
