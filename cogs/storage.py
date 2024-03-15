@@ -20,6 +20,7 @@ class storage(commands.Cog, name="storage"):
             cursor.add_row("store","<link name> <link>","Store a link of your choice")
             cursor.add_row("links"," ","View the links you have store")
             cursor.add_row("del-link","<link name>","Delete link of your choice")
+            cursor.add_row("db"," ","Get COMET cluster stats, only user have role mod can do this :D")
             
             await ctx.send(embed=embed)            
     
@@ -27,10 +28,9 @@ class storage(commands.Cog, name="storage"):
     async def store(self,ctx,name: str,link: str):
             
         await ctx.message.delete()
-        
+
         username = ctx.author.name
-        job = Mongo(database='links')
-        job.store_link(username,name,link)
+        Mongo(database='links').storeLink(username,name,link)
         
         await ctx.send(f"Finish storing {name} into database",delete_after=10.0)
         
@@ -38,9 +38,7 @@ class storage(commands.Cog, name="storage"):
     async def get_personal_link(self,ctx):
         
         user = ctx.author.name
-        
-        job = Mongo(database='links')
-        data = job.get_links(user)
+        data = Mongo(database='links').getLinks(user)
         
         embed = discord.Embed(title=f"{user} links",color=discord.Color.green()).set_thumbnail(url=ctx.author.display_avatar)
         cursor = EmbedCursor(embed)
@@ -81,6 +79,10 @@ class storage(commands.Cog, name="storage"):
         embed.description = f"{Converter.displayBytes(final_size)} cluster"
         
         await ctx.send(embed=embed)
+
+    @commands.command()
+    async def create_db(self,ctx):
+        pass
 
 async def setup(bot:commands.Bot):
     await bot.add_cog(storage(bot))

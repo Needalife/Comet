@@ -21,7 +21,7 @@ class Mongo:
             user_dict = {"user": f"{username}", f"{filter_is}" : f"{filter_content}"}
             collection.delete_one(user_dict)
                 
-    def store_link(self,username,title,link):
+    def storeLink(self,username,title,link):
         database = self.client[f"{self.database}"]
         collection = database['link']
         current_time = datetime.datetime.now(timezone.utc)
@@ -34,7 +34,7 @@ class Mongo:
         
         collection.insert_one(user_dict)
 
-    def get_links(self,username):
+    def getLinks(self,username):
         database = self.client[f"{self.database}"]
         collection = database['link']
         query = {"user":f"{username}"}

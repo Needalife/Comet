@@ -18,7 +18,7 @@ class moderation(commands.GroupCog, name="moderation"):
             #add more moderator commands
             cursor.add_row("posts"," ","Get a list of post on the server, do !post help for more post commands")
             cursor.add_row("get-code"," ","Get COMET code on git repo, contact Vally for invite")
-            cursor.add_row("db"," ","Get database size")
+            cursor.add_row("db"," ","Get database stats")
             
             await ctx.send(embed=embed)
     
