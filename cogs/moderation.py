@@ -17,6 +17,7 @@ class moderation(commands.GroupCog, name="moderation"):
             cursor.add_row("Command","Syntax","Function",True)
             #add more moderator commands
             cursor.add_row("posts"," ","Get a list of post on the server, do !post help for more post commands")
+            cursor.add_row("del-post","<post>","Delete a post")
             cursor.add_row("get-code"," ","Get COMET code on git repo, contact Vally for invite")
             cursor.add_row("db"," ","Get database stats")
             
@@ -38,7 +39,23 @@ class moderation(commands.GroupCog, name="moderation"):
             cursor.add_row(thread.jump_url,user.mention,thread.parent)
         
         await ctx.send(embed=embed)
-    
+
+    @commands.hybrid_command(name="del-post")
+    @commands.has_role("Mod")
+    async def del_post(self,ctx,*,post:str):
+        await ctx.message.delete()
+        guild = ctx.guild
+        threads = guild.threads
+
+        for thread in threads:
+            if thread.name.upper() == post.upper():
+                await thread.delete()
+                await ctx.send(f"Successfully deleting post: {thread.name}",delete_after=10.0)
+                break
+            else:
+                await ctx.send(f"No post name: {post}",delete_after=10.0)
+                break
+
     @commands.hybrid_command(name="get-code")
     @commands.has_role("Mod")
     async def get_git_repo(self,ctx):

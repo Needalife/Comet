@@ -29,7 +29,9 @@ class Bot(commands.Bot):
     async def on_member_join(self,member):
         await member.create_dm()
         await member.dm_channel.send(f'Hi {member.name}, welcome to {GUILD}!')
-            
-bot = Bot()
-                    
-bot.run(TOKEN)
+
+if os.path.exists(path=f".env"):
+    bot = Bot()   
+    bot.run(TOKEN)
+else:
+    print("No .env file, proceed to exit the program")
