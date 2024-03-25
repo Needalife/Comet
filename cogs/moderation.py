@@ -1,6 +1,8 @@
 import discord
 from utils.EmbedCursor import *
 from discord.ext import commands
+from models.User import *
+from utils.Mongo import *
 
 class moderation(commands.GroupCog, name="moderation"):
     def __init__(self,bot = commands.Bot):
@@ -92,6 +94,33 @@ class moderation(commands.GroupCog, name="moderation"):
                     color=0xE02B2B,
                 )
                 await ctx.send(embed=embed)
-              
+    
+    @commands.hybrid_command(name="track")
+    @commands.has_role("Mod")
+    async def track(self,ctx,user: discord.User = None, *, reason: str = "Not specified"):
+        try:
+            member = ctx.guild.get_member(user.id) or await ctx.guild.fetch_member(user.id)
+        except Exception as e:
+            print(f"Fail to retrieve user {user} id, error: {e}")
+
+        if user is None:
+            embed = discord.Embed(title="Users",description="User that has been track",color=0xBEBEFE)
+            cursor = EmbedCursor(embed=embed)
+            
+            await ctx.send(embed=embed)
+        else:    
+            data = User(user.display_name,user.created_at.strftime("%d/%m/%Y"),user.id,user.display_avatar,reason).userDocument()
+            track(data)
+            
+            embed = discord.Embed(title=f"Track user {user.display_name}")
+            embed.set_thumbnail(url=f"{user.display_avatar}")
+            
+            await ctx.send(embed=embed)
+    
+    @commands.hybrid_command(name="reg-all")
+    @commands.has_role("Mod")
+    async def reg_all(self,ctx):
+        pass
+    
 async def setup(bot:commands.Bot):
     await bot.add_cog(moderation(bot))

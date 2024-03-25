@@ -1,4 +1,5 @@
 import os,pymongo,requests,datetime
+from models.User import *
 from dotenv import load_dotenv
 from datetime import timezone
 
@@ -67,7 +68,7 @@ class gw2Items(Mongo):
         if database == "api-key":
             #user api key
             self.collection = self.database["gw2"]
-        
+    
     def write_user_api(self,username,userkey):
         user_dict = {"user": f"{username}", "key": f"{userkey}"}
         self.collection.insert_one(user_dict)
@@ -84,16 +85,15 @@ class gw2Items(Mongo):
         data = self.read_user_api(username)
         for value in data: self.key = value['key']
         
-        gw2_endpoint = 'https://api.guildwars2.com/v2/account'
+        gw2_account_endpoint = 'https://api.guildwars2.com/v2/account'
         headers = {'Authorization': f'Bearer {self.key}'}
-        response = requests.get(gw2_endpoint, headers=headers)
+        response = requests.get(gw2_account_endpoint, headers=headers)
         
         if response.status_code == 200:
             account_data = response.json()
             return account_data['name'],account_data['age'],account_data['fractal_level'],account_data['wvw_rank']
         else:
-            return None
-    
+            return None 
     #this method can only be call when get_user_info is already used!
     def get_user_leggy(self):
         leggy_url = 'https://api.guildwars2.com/v2/account/legendaryarmory'
@@ -150,3 +150,27 @@ class gw2Items(Mongo):
         icon = data['icon']
         
         return icon
+
+class track(Mongo):
+    def __init__(self,data = None, database="discord_users"):
+        super().__init__(database)
+        self.database = self.client[f"{database}"]
+        self.collection = self.database[f"{os.getenv('DISCORD_GUILD').replace(' ', '_')}"]
+        self.data = data
+        if data:
+            self.writeUser()
+        else:
+            self.getTrackUser()
+        
+    def writeUser(self):
+        query = self.data
+        self.collection.insert_one(query)
+    
+    def getTrackUser(self):
+        return
+    
+    def getAllActiveUser(self):
+        return
+    
+    
+    
