@@ -20,8 +20,9 @@ class moderation(commands.GroupCog, name="moderation"):
             #add more moderator commands
             cursor.add_row("posts"," ","Get a list of post on the server, do !post help for more post commands")
             cursor.add_row("del-post","<post>","Delete a post")
-            cursor.add_row("get-code"," ","Get COMET code on git repo, contact Vally for invite")
+            cursor.add_row("source-code"," ","Get COMET code on git repo, contact Vally for invite")
             cursor.add_row("db"," ","Get database stats")
+            cursor.add_row("track","<name> <reason>","track a user, reason can be optional, if no name is specified, retrieve all tracks user")
             
             await ctx.send(embed=embed)
     
@@ -58,7 +59,7 @@ class moderation(commands.GroupCog, name="moderation"):
                 await ctx.send(f"No post name: {post}",delete_after=10.0)
                 break
 
-    @commands.hybrid_command(name="get-code")
+    @commands.hybrid_command(name="source-code")
     @commands.has_role("Mod")
     async def get_git_repo(self,ctx):
         await ctx.message.delete()
@@ -109,10 +110,21 @@ class moderation(commands.GroupCog, name="moderation"):
             
             await ctx.send(embed=embed)
         else:    
-            data = User(user.display_name,user.created_at.strftime("%d/%m/%Y"),user.id,user.display_avatar,reason).userDocument()
-            track(data)
+            try:
+                user_data = User(
+                            user.display_name,
+                            user.created_at.strftime("%d/%m/%Y"),
+                            user.id,
+                            user.display_avatar,
+                            reason
+                            ).data("json")
+                
+                track(user_data)
+                
+            except Exception as e:
+                print(f"Error: {e}")
             
-            embed = discord.Embed(title=f"Track user {user.display_name}")
+            embed = discord.Embed(title=f"Track user {user.display_name}",description=f"{reason}",color=discord.Color.brand_red())
             embed.set_thumbnail(url=f"{user.display_avatar}")
             
             await ctx.send(embed=embed)
@@ -124,3 +136,4 @@ class moderation(commands.GroupCog, name="moderation"):
     
 async def setup(bot:commands.Bot):
     await bot.add_cog(moderation(bot))
+

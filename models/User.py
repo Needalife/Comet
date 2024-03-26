@@ -5,15 +5,14 @@ class User:
         self.created_at = created_at
         self.display_avatar = display_avatar
         self.description = description
-    
-    def userDocument(self):
         
-        data = {
-            'name' : f"{self.username}",
-            'user_id' : f"{self.user_id}",
-            'display_avatar' : f"{self.display_avatar}",
-            'description' : f"{self.description}",
-            'created_at' : f"{self.created_at}",
-        }
+    def data(self,data_type):
         
-        return data
+        if data_type == "json":
+            return {
+                'name' : f"{self.username}",
+                'user_id' : f"{self.user_id}",
+                'display_avatar' : f"{self.display_avatar}",
+                'description' : f"{self.description}",
+                'created_at' : f"{self.created_at}"
+                }

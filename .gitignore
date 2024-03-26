@@ -1,5 +1,7 @@
-
 .env
+
 testing.py
 test.py
 
+*.pyc
+tempCodeRunnerFile.py

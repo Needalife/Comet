@@ -1,5 +1,4 @@
 import os,pymongo,requests,datetime
-from models.User import *
 from dotenv import load_dotenv
 from datetime import timezone
 
@@ -157,20 +156,19 @@ class track(Mongo):
         self.database = self.client[f"{database}"]
         self.collection = self.database[f"{os.getenv('DISCORD_GUILD').replace(' ', '_')}"]
         self.data = data
+        
+        #Behaviour, method doesn't return data so it is allowed :)
         if data:
             self.writeUser()
-        else:
-            self.getTrackUser()
         
     def writeUser(self):
         query = self.data
         self.collection.insert_one(query)
     
-    def getTrackUser(self):
-        return
+    def getTrackUser(self): #this method will return a list
+        for doc in self.collection.find({}):
+            return
     
     def getAllActiveUser(self):
         return
-    
-    
     
