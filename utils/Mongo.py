@@ -162,13 +162,23 @@ class track(Mongo):
             self.writeUser()
         
     def writeUser(self):
-        query = self.data
-        self.collection.insert_one(query)
+        
+        query = {'user_id': self.data.get('user_id'),
+                 'created_at': self.data.get('created_at')}
+            
+        update_query = {
+            '$addToSet': {
+                'name': {'$each': [self.data.get('name')]},
+                'description': {'$each': [self.data.get('description')]},
+                'display_avatar':{'$each': [self.data.get('display_avatar')]}
+            }
+        } 
+        #mongo OP       
+        self.collection.update_one(query,update_query,upsert=True)
     
-    def getTrackUser(self): #this method will return a list
-        for doc in self.collection.find({}):
-            return
+    def getTrackUser(self): 
+        return
     
     def getAllActiveUser(self):
         return
-    
+

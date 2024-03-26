@@ -99,14 +99,9 @@ class moderation(commands.GroupCog, name="moderation"):
     @commands.hybrid_command(name="track")
     @commands.has_role("Mod")
     async def track(self,ctx,user: discord.User = None, *, reason: str = "Not specified"):
-        try:
-            member = ctx.guild.get_member(user.id) or await ctx.guild.fetch_member(user.id)
-        except Exception as e:
-            print(f"Fail to retrieve user {user} id, error: {e}")
-
+        
         if user is None:
-            embed = discord.Embed(title="Users",description="User that has been track",color=0xBEBEFE)
-            cursor = EmbedCursor(embed=embed)
+            embed = discord.Embed(title="Users",description="User that has been track",color=discord.Color.dark_gray())
             
             await ctx.send(embed=embed)
         else:    
@@ -124,7 +119,7 @@ class moderation(commands.GroupCog, name="moderation"):
             except Exception as e:
                 print(f"Error: {e}")
             
-            embed = discord.Embed(title=f"Track user {user.display_name}",description=f"{reason}",color=discord.Color.brand_red())
+            embed = discord.Embed(title=f"Track user {user.display_name}",description=f"Reason: {reason}",color=discord.Color.brand_red())
             embed.set_thumbnail(url=f"{user.display_avatar}")
             
             await ctx.send(embed=embed)
