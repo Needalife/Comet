@@ -79,7 +79,7 @@ class gw2(commands.GroupCog, name="gw2"):
                 for i in leg_data:
                     leg_data = i['id']
                     
-                    #update obsidian armor into database
+                    #update obsidian armor into database ffs (todo)
                     try:
                         leg_name = getItemName(f"{leg_data}")
                     except Exception:

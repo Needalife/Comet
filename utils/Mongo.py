@@ -177,7 +177,8 @@ class track(Mongo):
         self.collection.update_one(query,update_query,upsert=True)
     
     def getTrackUser(self): 
-        return
+        track_user_data = list(self.collection.find())
+        return track_user_data
     
     def getAllActiveUser(self):
         return

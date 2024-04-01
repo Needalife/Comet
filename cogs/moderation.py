@@ -101,7 +101,14 @@ class moderation(commands.GroupCog, name="moderation"):
     async def track(self,ctx,user: discord.User = None, *, reason: str = "Not specified"):
         
         if user is None:
-            embed = discord.Embed(title="Users",description="User that has been track",color=discord.Color.dark_gray())
+            embed = discord.Embed(title="Track Users",description="User that has been track",color=discord.Color.dark_gray())
+            
+            cursor = EmbedCursor(embed)
+            cursor.add_row('Name','Reason','Date Created',True)
+            
+            user_data = [{'name':user['name'],'reason':user['description'],'created_at':user['created_at']} for user in track().getTrackUser()]
+            for user in user_data:
+                cursor.add_row(user['name'],user['reason'],user['created_at'])
             
             await ctx.send(embed=embed)
         else:    
