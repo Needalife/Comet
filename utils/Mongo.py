@@ -158,8 +158,7 @@ class track(Mongo):
         self.data = data
         
         #Behaviour, method doesn't return data so it is allowed :)
-        if data:
-            self.writeUser()
+        if data: self.writeUser()
         
     def writeUser(self):
         
@@ -180,6 +179,10 @@ class track(Mongo):
         track_user_data = list(self.collection.find())
         return track_user_data
     
+    def deleteUser(self,user_id):
+        query = {'user': f"{user_id}"}
+        self.collection.delete_one(query)
+        
     def getAllActiveUser(self):
         return
 
