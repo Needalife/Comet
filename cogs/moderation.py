@@ -4,6 +4,21 @@ from discord.ext import commands
 from models.User import *
 from utils.Mongo import *
 
+class Choice(discord.ui.View):
+    def __init__(self)->None:
+        super().__init__()
+        self.value = None
+    
+    @discord.ui.button(label="Yes",style=discord.ButtonStyle.blurple)
+    async def confirm(self, button: discord.ui.Button, interaction: discord.Interaction)->None:
+        self.value = "yes"
+        self.stop() 
+    
+    @discord.ui.button(label="No", style=discord.ButtonStyle.blurple)
+    async def cancel(self,button: discord.ui.Button, interaction: discord.Interaction)->None:
+        self.value = "no"
+        self.stop()
+           
 class moderation(commands.GroupCog, name="moderation"):
     def __init__(self,bot = commands.Bot):
         self.bot = bot
@@ -131,6 +146,28 @@ class moderation(commands.GroupCog, name="moderation"):
             
             await ctx.send(embed=embed)
     
+    @commands.hybrid_command(name="clear-track")
+    @commands.has_role("Mod")
+    async def clear_track(self,ctx,user: discord.User) -> None:
+        def table(embed_table):
+            cursor = EmbedCursor(embed_table)
+            cursor.add_row('Name','Reason','Date Created',True)
+            
+            user_data = [{'name':user['name'],'reason':user['description'],'created_at':user['created_at']} for user in track().getTrackUser()]
+            for user in user_data:
+                cursor.add_row(user['name'],user['reason'],user['created_at'])
+        
+        buttons = Choice()
+        embed = discord.Embed(title=f"You sure want to stop tracking {user.display_name}?")
+        message =  await ctx.send(embed=embed,view=buttons)
+        await buttons.wait()
+        
+        if buttons.value == 'yes':
+            embed = discord.Embed(description=f"Stop tracking user {user.display_name}")
+        else:
+            await ctx.send('no')
+        await message.edit(embed=embed,view=None,content=None)
+        
     @commands.hybrid_command(name="reg-all")
     @commands.has_role("Mod")
     async def reg_all(self,ctx):
