@@ -165,7 +165,8 @@ class moderation(commands.GroupCog, name="moderation"):
         if buttons.value == 'yes':
             embed = discord.Embed(description=f"Stop tracking user {user.display_name}")
         else:
-            await ctx.send('no')
+            embed = discord.Embed(description=f"Cancel clear-track {user.display_name}")
+            
         await message.edit(embed=embed,view=None,content=None)
         
     @commands.hybrid_command(name="reg-all")
