@@ -157,7 +157,7 @@ class track(Mongo):
         self.collection = self.database[f"{os.getenv('DISCORD_GUILD').replace(' ', '_')}"]
         self.data = data
         
-        #Behaviour, method doesn't return data so it is allowed :)
+        #As a behaviour, this method doesn't return data
         if data: self.writeUser()
         
     def writeUser(self):
@@ -180,9 +180,8 @@ class track(Mongo):
         return track_user_data
     
     def deleteUser(self,user_id):
-        query = {'user': f"{user_id}"}
+        query = {'user_id': f"{user_id}"}
         self.collection.delete_one(query)
         
     def getAllActiveUser(self):
         return
-

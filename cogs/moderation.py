@@ -3,21 +3,7 @@ from utils.EmbedCursor import *
 from discord.ext import commands
 from models.User import *
 from utils.Mongo import *
-
-class Choice(discord.ui.View):
-    def __init__(self)->None:
-        super().__init__()
-        self.value = None
-    
-    @discord.ui.button(label="Yes",style=discord.ButtonStyle.blurple)
-    async def confirm(self, button: discord.ui.Button, interaction: discord.Interaction)->None:
-        self.value = "yes"
-        self.stop() 
-    
-    @discord.ui.button(label="No", style=discord.ButtonStyle.blurple)
-    async def cancel(self,button: discord.ui.Button, interaction: discord.Interaction)->None:
-        self.value = "no"
-        self.stop()
+from utils.UI import *
            
 class moderation(commands.GroupCog, name="moderation"):
     def __init__(self,bot = commands.Bot):
@@ -149,23 +135,17 @@ class moderation(commands.GroupCog, name="moderation"):
     @commands.hybrid_command(name="clear-track")
     @commands.has_role("Mod")
     async def clear_track(self,ctx,user: discord.User) -> None:
-        def table(embed_table):
-            cursor = EmbedCursor(embed_table)
-            cursor.add_row('Name','Reason','Date Created',True)
-            
-            user_data = [{'name':user['name'],'reason':user['description'],'created_at':user['created_at']} for user in track().getTrackUser()]
-            for user in user_data:
-                cursor.add_row(user['name'],user['reason'],user['created_at'])
-        
-        buttons = Choice()
+        buttons = Choices()
         embed = discord.Embed(title=f"You sure want to stop tracking {user.display_name}?")
         message =  await ctx.send(embed=embed,view=buttons)
         await buttons.wait()
         
         if buttons.value == 'yes':
             embed = discord.Embed(description=f"Stop tracking user {user.display_name}")
+            job = track()
+            job.deleteUser(user.id)
         else:
-            embed = discord.Embed(description=f"Cancel clear-track {user.display_name}")
+            embed = discord.Embed(description=f"Cancel command !clear-track {user.display_name}")
             
         await message.edit(embed=embed,view=None,content=None)
         
