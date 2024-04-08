@@ -1,9 +1,9 @@
 import discord
 from utils.EmbedCursor import *
 from discord.ext import commands
-from models.User import *
-from utils.Mongo import *
-from utils.UI import *
+from models.User import User
+from utils.Mongo import track
+from utils.UI import Choices
            
 class moderation(commands.GroupCog, name="moderation"):
     def __init__(self,bot = commands.Bot):
