@@ -3,7 +3,33 @@ from utils.Mongo import *
 from utils.EmbedCursor import *
 from utils.Converter import *
 from discord.ext import commands
-                
+import os,json
+import datetime
+
+def getKournaFishingCycle() -> list:
+    current_dir = os.path.dirname(__file__)
+    gw2cycle_path = os.path.join(current_dir, '.', 'search_dict', 'gw2Time.json')
+
+    with open(gw2cycle_path, 'r', encoding='utf-8') as file:
+        data = json.load(file)
+    
+    # Function to parse time strings into datetime objects
+    def parse_time(time_str):
+        return datetime.strptime(time_str, "%H:%M")
+    
+    day_cycle = []
+    for state in data['Tyria']:
+        if state['stage'] == 'Day':
+            start_time = parse_time(state['start'])
+            end_time = parse_time(state['end'])
+            day_cycle.append((start_time, end_time))
+    # Sort the time ranges based on their start times
+    sorted_day_cycle = sorted(day_cycle, key=lambda x: x[0])
+    # Convert sorted time ranges back to string representation
+    sorted_day_cycle_strings = [f"{start.strftime('%H:%M')} ~ {end.strftime('%H:%M')}" for start, end in sorted_day_cycle]
+
+    return sorted_day_cycle_strings
+        
 def getItemName(item_id):
     job = gw2Items("gw2_items")
     return job.get_item_name(item_id)
