@@ -156,7 +156,6 @@ class track(Mongo):
         self.database = self.client[f"{database}"]
         self.collection = self.database[f"{os.getenv('DISCORD_GUILD').replace(' ', '_')}"]
         self.data = data
-        
         #As a behaviour, this method doesn't return data
         if data: self.writeUser()
         
@@ -183,5 +182,3 @@ class track(Mongo):
         query = {'user_id': f"{user_id}"}
         self.collection.delete_one(query)
         
-    def getAllActiveUser(self):
-        return
