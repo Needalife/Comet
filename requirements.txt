@@ -1,4 +1,6 @@
+DateTimeRange==2.2.1
 discord.py==2.3.2
 pymongo==4.6.1
 python-dotenv==1.0.1
+pytz==2023.3.post1
 Requests==2.31.0
