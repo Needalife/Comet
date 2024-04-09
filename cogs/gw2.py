@@ -254,7 +254,7 @@ class gw2(commands.GroupCog, name="gw2"):
     async def gw2_fishing(self,ctx):
         await ctx.message.delete()
         available_time = getKournaFishingCycle()
-        current_time = Converter().timeVN(datetime.now()) #string
+        current_time = Converter().timeVN(datetime.now(),is12HourFormat=True) #string
         
         embed = discord.Embed(title="Kourna Fishing Timetable",description="VN time",color=discord.Color.gold())
         cursor = EmbedCursor(embed)

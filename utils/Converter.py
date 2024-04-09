@@ -68,7 +68,9 @@ class Converter:
         return "%s %s" % (s, size_name[i])
     
     @staticmethod
-    def timeVN(time):
-        return time.astimezone(pytz.timezone('Asia/Ho_Chi_Minh')).strftime("%I:%M")
-
+    def timeVN(time,is12HourFormat = False):
+        if is12HourFormat == True:
+            return time.astimezone(pytz.timezone('Asia/Ho_Chi_Minh')).strftime("%I:%M")
+        else:
+            return time.astimezone(pytz.timezone('Asia/Ho_Chi_Minh')).strftime("%H:%M")
 
