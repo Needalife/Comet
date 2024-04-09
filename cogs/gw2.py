@@ -1,14 +1,18 @@
-import discord,requests
+import discord,requests,os,json
 from utils.Mongo import *
 from utils.EmbedCursor import *
 from utils.Converter import *
 from discord.ext import commands
-import os,json
-import datetime
+from datetime import datetime
+from datetimerange import DateTimeRange
 
+def splitTimeRange(time_range:str,delimeter:str):
+    start_time, end_time = time_range.split(delimeter)
+    return start_time.strip(),end_time.strip()
+    
 def getKournaFishingCycle() -> list:
     current_dir = os.path.dirname(__file__)
-    gw2cycle_path = os.path.join(current_dir, '.', 'search_dict', 'gw2Time.json')
+    gw2cycle_path = os.path.join(current_dir, '..', 'search_dict', 'gw2Time.json')
 
     with open(gw2cycle_path, 'r', encoding='utf-8') as file:
         data = json.load(file)
@@ -59,6 +63,7 @@ class gw2(commands.GroupCog, name="gw2"):
             cursor.add_row("recipe","<item name>","Get recipe or mystic forge recipe or both")
             cursor.add_row("price","<item name>","Get trading post price")
             cursor.add_row("clover"," ","Mystic Clover WvW one time reward track :D")
+            cursor.add_row("fish"," ","Show the fishing time of Kourna")
             
             await ctx.send(embed=embed)
         
@@ -244,10 +249,25 @@ class gw2(commands.GroupCog, name="gw2"):
         cursor3.add_row("Long-Lost Tahkayun Weapons Reward Track","","7🍀")
         cursor3.add_row("Xunlai Customer Loyalty Perks Program","","7🍀")
         await ctx.send(embed=embed3)
-        
-    @gw2.command()
-    async def web(self,ctx,user_name):
-        pass
     
+    @gw2.command(name='fish')
+    async def gw2_fishing(self,ctx):
+        available_time = getKournaFishingCycle()
+        current_time = Converter().timeVN(datetime.now())
+        
+        embed = discord.Embed(title="Kourna Fishing Timetable",description="VN time",color=discord.Color.gold())
+        cursor = EmbedCursor(embed)
+        cursor.add_row("Time","Active?","Upcoming",isHeader=True)
+        
+        for time_range in available_time:
+            start_time, end_time = splitTimeRange(time_range,'~')
+            if current_time in DateTimeRange(start_time,end_time):
+                cursor.add_row(f"{time_range}","✅","❌")
+                continue
+            else:
+                cursor.add_row(f"{time_range}","❌","❌")
+        
+        await ctx.send(embed=embed,delete_after=900.0)
+        
 async def setup(bot:commands.Bot):
     await bot.add_cog(gw2(bot))
