@@ -252,18 +252,29 @@ class gw2(commands.GroupCog, name="gw2"):
     
     @gw2.command(name='fish')
     async def gw2_fishing(self,ctx):
+        await ctx.message.delete()
         available_time = getKournaFishingCycle()
-        current_time = Converter().timeVN(datetime.now())
+        current_time = Converter().timeVN(datetime.now()) #string
         
         embed = discord.Embed(title="Kourna Fishing Timetable",description="VN time",color=discord.Color.gold())
         cursor = EmbedCursor(embed)
         cursor.add_row("Time","Active?","Upcoming",isHeader=True)
-        
+        #Shit is ugly, I know :') - Vally
         for time_range in available_time:
             start_time, end_time = splitTimeRange(time_range,'~')
-            if current_time in DateTimeRange(start_time,end_time):
+            if current_time in DateTimeRange(start_time,end_time): #Condition for current time in range of avail time
                 cursor.add_row(f"{time_range}","✅","❌")
                 continue
+            elif int(current_time.split(":")[0]) == 12 and 39 < int(current_time.split(":")[1]) <= 59 and start_time == '1:30':
+                minutes_left = 30 + (60-int(current_time.split(":")[1]))
+                cursor.add_row(f"{time_range}","❌",f"in {minutes_left} minutes")
+                continue
+            elif 0 <= int(start_time.split(":")[0]) - int(current_time.split(":")[0]) < 2: #Catch closest avail time
+                if int(start_time.split(":")[0]) == int(current_time.split(":")[0]):
+                    minutes_left = int(start_time.split(":")[1]) - int(current_time.split(":")[1])
+                    cursor.add_row(f"{time_range}","❌",f"in {minutes_left} minutes")
+                    continue
+                cursor.add_row(f"{time_range}","❌","✅")
             else:
                 cursor.add_row(f"{time_range}","❌","❌")
         
