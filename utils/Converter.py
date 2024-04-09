@@ -1,4 +1,5 @@
-import math
+import math,pytz
+from datetime import datetime
 
 class Converter:
     def __init__(self,expression=None):
@@ -65,3 +66,7 @@ class Converter:
         p = math.pow(1024, i)
         s = round(byteSize / p, 2)
         return "%s %s" % (s, size_name[i])
+    
+    @staticmethod
+    def timeVN(time):
+        return time.astimezone(pytz.timezone('Asia/Ho_Chi_Minh')).strftime("%H:%M")
