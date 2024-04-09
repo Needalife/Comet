@@ -69,4 +69,6 @@ class Converter:
     
     @staticmethod
     def timeVN(time):
-        return time.astimezone(pytz.timezone('Asia/Ho_Chi_Minh')).strftime("%H:%M")
+        return time.astimezone(pytz.timezone('Asia/Ho_Chi_Minh')).strftime("%I:%M")
+
+
