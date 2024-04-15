@@ -149,11 +149,6 @@ class moderation(commands.GroupCog, name="moderation"):
             
         await message.edit(embed=embed,view=None,content=None)
         
-    @commands.hybrid_command(name="reg-all")
-    @commands.has_role("Mod")
-    async def reg_all(self,ctx):
-        pass
-    
 async def setup(bot:commands.Bot):
     await bot.add_cog(moderation(bot))
 
