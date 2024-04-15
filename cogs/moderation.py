@@ -24,6 +24,7 @@ class moderation(commands.GroupCog, name="moderation"):
             cursor.add_row("source-code"," ","Get COMET code on git repo, contact Vally for invite")
             cursor.add_row("db"," ","Get database stats")
             cursor.add_row("track","<name> <reason>","track a user, reason can be optional, if no name is specified, retrieve all tracks user")
+            cursor.add_row("clear-track","<name>","stop tracking a user")
             
             await ctx.send(embed=embed)
     
