@@ -253,6 +253,7 @@ class gw2(commands.GroupCog, name="gw2"):
     @gw2.command(name='fish')
     async def gw2_fishing(self,ctx):
         await ctx.message.delete()
+        
         available_time = getKournaFishingCycle()
         current_time = Converter().timeVN(datetime.now(),is12HourFormat=True) #string
         

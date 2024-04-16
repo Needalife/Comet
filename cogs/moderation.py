@@ -24,6 +24,7 @@ class moderation(commands.GroupCog, name="moderation"):
             cursor.add_row("source-code"," ","Get COMET code on git repo, contact Vally for invite")
             cursor.add_row("db"," ","Get database stats")
             cursor.add_row("track","<name> <reason>","track a user, reason can be optional, if no name is specified, retrieve all tracks user")
+            cursor.add_row("clear-track","<name>","stop tracking a user")
             
             await ctx.send(embed=embed)
     
@@ -115,7 +116,7 @@ class moderation(commands.GroupCog, name="moderation"):
         else:    
             try:
                 user_data = User(
-                            user.display_name,
+                            user.name,
                             user.created_at.strftime("%d/%m/%Y"),
                             user.id,
                             user.display_avatar,
@@ -149,11 +150,6 @@ class moderation(commands.GroupCog, name="moderation"):
             
         await message.edit(embed=embed,view=None,content=None)
         
-    @commands.hybrid_command(name="reg-all")
-    @commands.has_role("Mod")
-    async def reg_all(self,ctx):
-        pass
-    
 async def setup(bot:commands.Bot):
     await bot.add_cog(moderation(bot))
 
