@@ -116,7 +116,7 @@ class moderation(commands.GroupCog, name="moderation"):
         else:    
             try:
                 user_data = User(
-                            user.display_name,
+                            user.name,
                             user.created_at.strftime("%d/%m/%Y"),
                             user.id,
                             user.display_avatar,

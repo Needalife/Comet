@@ -39,7 +39,8 @@ class Bot(commands.Bot):
     
     async def on_ready(self):
         print(f'🌠 {self.user.name} has crashes on {GUILD} server!')
-        await self.periodic_update(1)
+        if self.track_channel_id:
+            await self.periodic_update(1)
     
     async def on_message(self, message: discord.Message):
         if message.author == self.user:
@@ -47,7 +48,7 @@ class Bot(commands.Bot):
 
         await bot.process_commands(message)
         
-        if message.author.display_name in self.user_data:
+        if message.author.name in self.user_data:
             track_channel = self.get_channel(int(self.track_channel_id))
             current_time = Converter().timeVN(datetime.now())
             await track_channel.send(f"[{current_time}]{message.channel.mention} {message.author.display_name}: {message.content}")
