@@ -53,7 +53,7 @@ class Bot(commands.Bot):
         end_time = time.time()
         total_time = end_time - start_time
         try:
-            print(f"Command '{self.ctx.command.name}' took {total_time:.4f} seconds to execute.")
+            print(f"Command {self.ctx.command.name} took {total_time:.4f} seconds to execute.")
         except:
             pass
         
