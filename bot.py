@@ -1,4 +1,4 @@
-import os, discord,asyncio
+import os, discord,asyncio,time
 from dotenv import load_dotenv
 from discord.ext import commands
 from utils.Mongo import track
@@ -12,6 +12,7 @@ class Bot(commands.Bot):
     def __init__(self):
         super().__init__(command_prefix=commands.when_mentioned_or('!'), intents=discord.Intents.all())
         self.user_data = None
+        self.ctx = None
         self.track_channel_id = os.getenv('track_log_channel_id')
         
     async def load_cogs(self) -> None:
@@ -46,13 +47,21 @@ class Bot(commands.Bot):
         if message.author == self.user:
             return
 
+        self.ctx = await self.get_context(message)
+        start_time = time.time()
         await bot.process_commands(message)
+        end_time = time.time()
+        total_time = end_time - start_time
+        try:
+            print(f"Command '{self.ctx.command.name}' took {total_time:.4f} seconds to execute.")
+        except:
+            pass
         
         if message.author.name in self.user_data:
             track_channel = self.get_channel(int(self.track_channel_id))
             current_time = Converter().timeVN(datetime.now())
             await track_channel.send(f"[{current_time}]{message.channel.mention} {message.author.display_name}: {message.content}")
-            
+
     async def on_member_join(self,member):
         await member.create_dm()
         await member.dm_channel.send(f'Hi {member.name}, welcome to {GUILD}!')

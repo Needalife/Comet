@@ -49,7 +49,7 @@ def getIcon(item_name):
 class gw2(commands.GroupCog, name="gw2"):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        
+
     @commands.group(name="gw2",description="GW2 commands")
     async def gw2(self,ctx):
         if ctx.invoked_subcommand is None:
@@ -66,7 +66,7 @@ class gw2(commands.GroupCog, name="gw2"):
             cursor.add_row("fish"," ","Show the fishing time of Kourna")
             
             await ctx.send(embed=embed)
-        
+
     @gw2.command(name="reg-api")
     async def reg_api_key(self, ctx, name, key):
         try:
