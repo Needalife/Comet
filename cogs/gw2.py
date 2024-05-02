@@ -46,6 +46,22 @@ def getIcon(item_name):
     job = gw2Items("gw2_items")
     return job.get_item_icon(item_name)
 
+def getEvents(expansion) -> list:
+    current_dir = os.path.dirname(__file__)
+    gw2_event_cycle_path = os.path.join(current_dir,'..','search_dict','gw2Event.json')
+
+    with open(gw2_event_cycle_path,'r',encoding='utf-8') as file:
+        data = json.load(file)
+    
+    events = [({'name': f"{event['name']}",
+                'start': f"{event['start']}",
+                'end': f"{event['end']}",
+                'interval': f"{event['interval']}",
+                'zone': f"{event['zone']}",
+                'location' : f"{event['location']}"}) for event in data[f'{expansion}'] ]
+        
+    return events
+    
 class gw2(commands.GroupCog, name="gw2"):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -280,6 +296,11 @@ class gw2(commands.GroupCog, name="gw2"):
                 cursor.add_row(f"{time_range}","❌","❌")
         
         await ctx.send(embed=embed,delete_after=900.0)
+    
+    @gw2.commmand(name='ET')
+    async def gw2_event(self,ctx, *, expansion: str):
+        embed = discord.Embed(title="Events Timer",description=f"{expansion}",color=discord.Color.random())
         
+    
 async def setup(bot:commands.Bot):
     await bot.add_cog(gw2(bot))
