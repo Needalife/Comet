@@ -1,54 +1,29 @@
 {
     "SOTO": [
         {
-            "name": "Convergences",
-            "start": "02:30",
-            "end": "11:30",
-            "interval": "3",
-            "zone": "The Wizard's Tower",
-            "location": "[&BB8OAAA=]"
-        },
+            "name": "Unlocking the Wizard's Tower",
+            "first": "00:00",
+            "last": "22:00",
+            "interval": "2",
+            "duration": "25",
+            "location": "[&BL4NAAA=]"
+        },  
         {
-            "name": "Csas",
-            "start": "02:30",
-            "end": "11:30",
-            "interval": "3",
-            "zone": "The Wizard's Tower",
-            "location": "[&BB8OAAA=]"
-        },
-        {
-            "name": "Convergences",
-            "start": "02:30",
-            "end": "11:30",
-            "interval": "3",
-            "zone": "The Wizard's Tower",
-            "location": "[&BB8OAAA=]"
-        },
-        {
-            "name": "Csas",
-            "start": "02:30",
-            "end": "11:30",
-            "interval": "3",
-            "zone": "The Wizard's Tower",
-            "location": "[&BB8OAAA=]"
+            "name": "The Defense of Amnytas",
+            "first": "01:00",
+            "last": "23:00",
+            "interval": "2",
+            "duration": "25",
+            "location": "[&BDQOAAA=]"
         },
         {
             "name": "Convergences",
-            "start": "02:30",
-            "end": "11:30",
+            "first": "2:30",
+            "last": "23:30",
             "interval": "3",
-            "zone": "The Wizard's Tower",
-            "location": "[&BB8OAAA=]"
-        },
-        {
-            "name": "Csas",
-            "start": "02:30",
-            "end": "11:30",
-            "interval": "3",
-            "zone": "The Wizard's Tower",
+            "duration": "10",
             "location": "[&BB8OAAA=]"
         }
-
     ],
     "EOD":[],
     "POF":[],
