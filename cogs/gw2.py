@@ -70,7 +70,7 @@ def checkOngoing(avail_time: list, current_time, duration: int):
     
     if next_event_time:
         time_difference = (next_event_time.timestamp() - current_time.timestamp()) / 60
-        if time_difference < duration:
+        if time_difference <= duration and current_time > time:
             return True
         else:
             return int(time_difference)
@@ -340,9 +340,9 @@ class gw2(commands.GroupCog, name="gw2"):
             if isAvailable is True:
                 cursor.add_row(f"{event['name']}","ongoing",f"{event['location']}")
             else:
-                cursor.add_row(f"{event['name']}",f"after {isAvailable} minutes",f"{event['location']}")
+                cursor.add_row(f"{event['name']}",f"start in {isAvailable} minutes",f"{event['location']}")
         
-        await ctx.send(embed=embed,delete_after=180.0)
+        await ctx.send(embed=embed,delete_after=60.0)
 
 async def setup(bot:commands.Bot):
     await bot.add_cog(gw2(bot))
