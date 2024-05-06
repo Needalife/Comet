@@ -1,9 +1,9 @@
-import discord,requests,os,json
+import discord,requests,os,json,pytz
 from utils.Mongo import *
 from utils.EmbedCursor import *
 from utils.Converter import *
 from discord.ext import commands
-from datetime import datetime
+from datetime import datetime, timedelta
 from datetimerange import DateTimeRange
 
 def splitTimeRange(time_range:str,delimeter:str):
@@ -54,11 +54,26 @@ def getEvents(expansion) -> list:
         data = json.load(file)
     
     return [({'name': f"{event['name']}",
-                'start': f"{event['start']}",
-                'end': f"{event['end']}",
+                'first': f"{event['first']}",
+                'last': f"{event['last']}",
                 'interval': f"{event['interval']}",
-                'zone': f"{event['zone']}",
+                'duration' : f"{event['duration']}",
                 'location' : f"{event['location']}"}) for event in data[f'{expansion}']]
+
+def checkOngoing(avail_time: list, current_time, duration: int):
+    next_event_time = None
+    for time in avail_time:
+        time = time.replace(tzinfo=current_time.tzinfo)
+        if time > current_time:
+            next_event_time = time
+            break
+    
+    if next_event_time:
+        time_difference = (next_event_time.timestamp() - current_time.timestamp()) / 60
+        if time_difference < duration:
+            return True
+        else:
+            return int(time_difference)
         
 class gw2(commands.GroupCog, name="gw2"):
     def __init__(self, bot: commands.Bot):
@@ -67,20 +82,24 @@ class gw2(commands.GroupCog, name="gw2"):
     @commands.group(name="gw2",description="GW2 commands")
     async def gw2(self,ctx):
         if ctx.invoked_subcommand is None:
-            embed = discord.Embed(title="Help pannel",description="GW2 commands",color=discord.Color.red())
-            cursor = EmbedCursor(embed=embed)
+            embed1 = discord.Embed(title="Help pannel",description="GW2 commands",color=discord.Color.red())
+            cursor1 = EmbedCursor(embed=embed1)
             #GW2 help pannel
-            cursor.add_row("Command","Syntax","Function",True)
-            cursor.add_row("reg-api","<name of your choice> <your gw2 api>","Register your gw2 api to a name of your choice")
-            cursor.add_row("del-api","<name of your registered api>","Delete your registered api")
-            cursor.add_row("get-stats","<name of your registered api>","Get ingame user stat")
-            cursor.add_row("recipe","<item name>","Get recipe or mystic forge recipe or both")
-            cursor.add_row("price","<item name>","Get trading post price")
-            cursor.add_row("clover"," ","Mystic Clover WvW one time reward track :D")
-            cursor.add_row("fish"," ","Show the fishing time of Kourna")
-            cursor.add_row("ET","<expansion>","Show event timer for expansion of choices")
+            cursor1.add_row("Command","Syntax","Function",True)
+            cursor1.add_row("reg-api","<name of your choice> <your gw2 api>","Register your gw2 api to a name of your choice")
+            cursor1.add_row("del-api","<name of your registered api>","Delete your registered api")
+            cursor1.add_row("get-stats","<name of your registered api>","Get ingame user stat")
+            cursor1.add_row("recipe","<item name>","Get recipe or mystic forge recipe or both")
+            cursor1.add_row("price","<item name>","Get trading post price")
+            cursor1.add_row("ET","<expansion>","Show event timer for expansion of choices")
             
-            await ctx.send(embed=embed)
+            embed2 = discord.Embed(title="Help pannel",description=" ",color=discord.Color.red())
+            cursor2 = EmbedCursor(embed=embed2)
+            cursor2.add_row("clover"," ","Mystic Clover WvW one time reward track :D")
+            cursor2.add_row("fish"," ","Show the fishing time of Kourna")
+            
+            await ctx.send(embed=embed1)
+            await ctx.send(embed=embed2)
 
     @gw2.command(name="reg-api")
     async def reg_api_key(self, ctx, name, key):
@@ -296,11 +315,34 @@ class gw2(commands.GroupCog, name="gw2"):
         
         await ctx.send(embed=embed,delete_after=900.0)
     
-    @gw2.commmand(name='ET')
-    async def gw2_event(self,ctx, *, expansion: str):
+    @gw2.command()
+    async def ET(self,ctx, *, expansion: str):
+        await ctx.message.delete()
+        
         embed = discord.Embed(title="Events Timer",description=f"{expansion}",color=discord.Color.random())
         cursor = EmbedCursor(embed)    
+        cursor.add_row("Event","Status","Waypoint",True)
         
+        vietnam_timezone = pytz.timezone('Asia/Ho_Chi_Minh')
+        current_time = datetime.now(tz=vietnam_timezone)
+        for event in getEvents(expansion.upper()):
+            start_time = datetime.combine(datetime.now().date(),datetime.strptime(event['first'], "%H:%M").time())
+            end_time = datetime.combine(datetime.now().date(),datetime.strptime(event['last'], "%H:%M").time())
+            event_duration = int(event['duration'])
+            available_time = []
+            
+            while start_time <= end_time:
+                available_time.append(start_time)
+                start_time = start_time + timedelta(hours=int(event['interval']))
+            
+            isAvailable = checkOngoing(avail_time=available_time,current_time=current_time,duration=event_duration)
+            
+            if isAvailable is True:
+                cursor.add_row(f"{event['name']}","ongoing",f"{event['location']}")
+            else:
+                cursor.add_row(f"{event['name']}",f"after {isAvailable} minutes",f"{event['location']}")
         
+        await ctx.send(embed=embed,delete_after=180.0)
+
 async def setup(bot:commands.Bot):
     await bot.add_cog(gw2(bot))
