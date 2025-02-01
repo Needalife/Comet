@@ -6,11 +6,9 @@ import (
 
 
 func main() {
-	cfg := config.LoadConfig()
-
-	app := &bot{
-		config: cfg,
-	}
+    app := &bot{
+        config: config.LoadConfig(),
+    }
 
 	app.run()
 }
