@@ -8,6 +8,7 @@ import (
 
 type Config struct {
 	Token string
+	Prefix string
 }
 
 func LoadConfig() Config {
@@ -18,5 +19,6 @@ func LoadConfig() Config {
 
 	return Config {
 		Token: os.Getenv("TOKEN"),
+		Prefix: os.Getenv("PREFIX"),
 	}
 }
