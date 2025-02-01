@@ -19,16 +19,6 @@ type bot struct {
 	db_client *mongo.Client
 }
 
-func open(sess *discordgo.Session) {
-	err := sess.Open()
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer sess.Close()
-
-	fmt.Println("Comet is up!")
-}
-
 func mount(sess *discordgo.Session, prefix string) {
 	sess.AddHandler(func(s *discordgo.Session, m *discordgo.MessageCreate) {
 		if m.Author.ID == s.State.User.ID {
@@ -59,7 +49,8 @@ func (app *bot) run() {
 	}
 
 	mount(sess, app.config.Discord.Prefix) //add handlers and privs
-	open(sess) //start session
+	open(sess) //open session
+	defer sess.Close() 
 
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
