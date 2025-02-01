@@ -2,6 +2,7 @@ package main
 
 import (
 	"Comet/internal/config"
+	"Comet/internal/db"
 	"fmt"
 	"log"
 	"os"
@@ -10,10 +11,22 @@ import (
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 type bot struct {
-	config config.Config
+	config    config.Config
+	db_client *mongo.Client
+}
+
+func open(sess *discordgo.Session) {
+	err := sess.Open()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer sess.Close()
+
+	fmt.Println("Comet is up!")
 }
 
 func mount(sess *discordgo.Session, prefix string) {
@@ -33,24 +46,20 @@ func mount(sess *discordgo.Session, prefix string) {
 	})
 
 	fmt.Println("Finish adding handlers!")
+	sess.Identify.Intents = discordgo.IntentsAllWithoutPrivileged
 }
 
 func (app *bot) run() {
-	sess, err := discordgo.New("Bot " + app.config.Token)
+	app.db_client = db.ConnectMongo(app.config.Mongo.URI)
+	defer db.DisconnectMongo(app.db_client)
+
+	sess, err := discordgo.New("Bot " + app.config.Discord.Token)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	mount(sess, app.config.Prefix)
-	sess.Identify.Intents = discordgo.IntentsAllWithoutPrivileged
-
-	err = sess.Open()
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer sess.Close()
-
-	fmt.Println("Comet is up!")
+	mount(sess, app.config.Discord.Prefix) //add handlers and privs
+	open(sess) //start session
 
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
