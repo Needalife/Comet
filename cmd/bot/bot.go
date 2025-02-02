@@ -9,6 +9,7 @@ import (
 	"os/signal"
 	"strings"
 	"syscall"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 	"go.mongodb.org/mongo-driver/v2/mongo"
@@ -21,18 +22,28 @@ type bot struct {
 
 func mount(sess *discordgo.Session, prefix string) {
 	sess.AddHandler(func(s *discordgo.Session, m *discordgo.MessageCreate) {
-		if m.Author.ID == s.State.User.ID {
-			return
-		}
+        if m.Author.ID == s.State.User.ID {
+            return
+        }
 
-		args := strings.Split(m.Content, " ")
-		if args[0] != prefix {
-			return
-		}
+        if !strings.HasPrefix(m.Content, prefix) {
+            return
+        }
 
-		if args[1] == "hello" {
-			s.ChannelMessageSend(m.ChannelID, "world!")
-		}
+        content := strings.TrimPrefix(m.Content, prefix)
+
+        args := strings.Fields(content) 
+
+        if len(args) == 0 {
+            return
+        }
+
+        if args[0] == "ping" {
+            latency := time.Since(m.Timestamp).Milliseconds()
+            response := fmt.Sprintf("pong: %dms!", latency)
+            s.ChannelMessageSend(m.ChannelID, response)
+            return
+        }
 	})
 
 	fmt.Println("Finish adding handlers!")
