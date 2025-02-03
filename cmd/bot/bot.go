@@ -1,6 +1,7 @@
 package main
 
 import (
+	"Comet/internal/command"
 	"Comet/internal/config"
 	"Comet/internal/db"
 	"fmt"
@@ -9,7 +10,6 @@ import (
 	"os/signal"
 	"strings"
 	"syscall"
-	"time"
 
 	"github.com/bwmarrin/discordgo"
 	"go.mongodb.org/mongo-driver/v2/mongo"
@@ -31,19 +31,18 @@ func mount(sess *discordgo.Session, prefix string) {
         }
 
         content := strings.TrimPrefix(m.Content, prefix)
-
         args := strings.Fields(content) 
-
         if len(args) == 0 {
             return
         }
+		commandName := args[0]
 
-        if args[0] == "ping" {
-            latency := time.Since(m.Timestamp).Milliseconds()
-            response := fmt.Sprintf("pong: %dms!", latency)
-            s.ChannelMessageSend(m.ChannelID, response)
-            return
-        }
+
+        if handler, exists := command.Registry[commandName]; exists {
+			handler(s, m, args[1:])
+		} else {
+			s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Unknown command: %s", commandName))
+		}
 	})
 
 	fmt.Println("Finish adding handlers!")
