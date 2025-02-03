@@ -8,7 +8,6 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"strings"
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
@@ -26,23 +25,8 @@ func mount(sess *discordgo.Session, prefix string) {
             return
         }
 
-        if !strings.HasPrefix(m.Content, prefix) {
-            return
-        }
-
-        content := strings.TrimPrefix(m.Content, prefix)
-        args := strings.Fields(content) 
-        if len(args) == 0 {
-            return
-        }
-		commandName := args[0]
-		fmt.Println(args)
-
-
-        if handler, exists := command.Registry[commandName]; exists {
-			handler(s, m, args[1:])
-		} else {
-			s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Unknown command: %s", commandName))
+		if handleCommand(s, m, prefix, command.Registry) {
+			return
 		}
 	})
 
