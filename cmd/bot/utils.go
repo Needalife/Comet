@@ -24,7 +24,12 @@ func open(sess *discordgo.Session) {
 	fmt.Println(asciiArt)
 }
 
-func handleCommand(s *discordgo.Session, m *discordgo.MessageCreate, prefix string, registry map[string]func(*discordgo.Session, *discordgo.MessageCreate, []string)) bool {
+func handleCommand(
+	s *discordgo.Session, 
+	m *discordgo.MessageCreate, 
+	prefix string, 
+	registry map[string]func(*discordgo.Session, *discordgo.MessageCreate, []string),
+	) bool {
 	if !strings.HasPrefix(m.Content, prefix) {
 		return false
 	}
