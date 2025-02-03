@@ -14,7 +14,7 @@ type Mongo struct {
 func LoadMongo() Mongo {
 	err := godotenv.Load(".env") 
 	if err != nil {
-		fmt.Println("No .env file found")
+		fmt.Println("No .env file found (MongoDB config), proceed to use env variables")
 	}
 
 	return Mongo {
