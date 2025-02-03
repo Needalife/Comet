@@ -13,7 +13,15 @@ func open(sess *discordgo.Session) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Comet is up!")
+	asciiArt := `
+ ██████╗ ██████╗ ███╗   ███╗███████╗████████╗
+██╔════╝██╔═══██╗████╗ ████║██╔════╝╚══██╔══╝
+██║     ██║   ██║██╔████╔██║█████╗     ██║
+██║     ██║   ██║██║╚██╔╝██║██╔══╝     ██║ 
+╚██████╗╚██████╔╝██║ ╚═╝ ██║███████╗   ██║
+ ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝   ╚═╝
+`
+	fmt.Println(asciiArt)
 }
 
 func handleCommand(s *discordgo.Session, m *discordgo.MessageCreate, prefix string, registry map[string]func(*discordgo.Session, *discordgo.MessageCreate, []string)) bool {
@@ -28,7 +36,7 @@ func handleCommand(s *discordgo.Session, m *discordgo.MessageCreate, prefix stri
 	}
 
 	commandName := args[0]
-	
+
 	if handler, exists := registry[commandName]; exists {
 		handler(s, m, args[1:])
 		return true
