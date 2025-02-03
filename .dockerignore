@@ -1,0 +1,11 @@
+.vscode
+.git
+.vscode
+.log
+bin/
+.air.toml
+.gitattributes
+.gitignore
+.env
+LICENSE
+README.md
