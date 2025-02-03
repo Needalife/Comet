@@ -1,0 +1,12 @@
+services:
+    comet:
+      build:
+        context: .
+        dockerfile: deploy/Dockerfile
+      container_name: bot
+      restart: on-failure
+      environment:
+        TOKEN: ${TOKEN}
+        PREFIX: ${PREFIX}
+        MONGO_URI: ${MONGO_URI}
+      
