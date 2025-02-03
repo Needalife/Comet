@@ -36,6 +36,7 @@ func mount(sess *discordgo.Session, prefix string) {
             return
         }
 		commandName := args[0]
+		fmt.Println(args)
 
 
         if handler, exists := command.Registry[commandName]; exists {
