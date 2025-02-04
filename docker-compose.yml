@@ -7,6 +7,5 @@ services:
       restart: on-failure
       environment:
         TOKEN: ${TOKEN}
-        PREFIX: ${PREFIX}
         MONGO_URI: ${MONGO_URI}
       
