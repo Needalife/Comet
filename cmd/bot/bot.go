@@ -33,7 +33,7 @@ func mount(sess *discordgo.Session, servId string) {
     })
 
     sess.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-        fmt.Print("Handling interaction: ")
+        fmt.Print("Handle interaction: ")
         command.HandleSlashCommand(s, i)
     })
 }
