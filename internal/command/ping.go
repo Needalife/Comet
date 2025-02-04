@@ -1,6 +1,7 @@
 package command
 
 import (
+	"Comet/internal/colors"
 	"fmt"
 	"time"
 
@@ -12,7 +13,7 @@ func pingCommand(s *discordgo.Session, m *discordgo.MessageCreate, args[] string
 	response := fmt.Sprintf("pong: %dms!", latency)
 	embed := &discordgo.MessageEmbed{
 		Title: response,
-		Color: 0x00ff00,
+		Color: colors.Green,
 	}
 	s.ChannelMessageSendEmbed(m.ChannelID, embed)
 }

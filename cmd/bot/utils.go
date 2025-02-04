@@ -1,6 +1,7 @@
 package main
 
 import (
+	"Comet/internal/colors"
 	"fmt"
 	"log"
 	"strings"
@@ -50,7 +51,7 @@ func handleCommand(
 
 	embed := &discordgo.MessageEmbed{
 		Title: fmt.Sprintf("Unknown command: !%s", commandName),
-		Color: 0xFF0000,
+		Color: colors.Red,
 	}
 	s.ChannelMessageSendEmbed(m.ChannelID, embed)
 	return true
