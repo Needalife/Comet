@@ -8,7 +8,6 @@ import (
 
 type Discord struct {
 	Token  string
-	Prefix string
 }
 
 func LoadDiscord() Discord {
@@ -19,6 +18,5 @@ func LoadDiscord() Discord {
 
 	return Discord{
 		Token:  os.Getenv("TOKEN"),
-		Prefix: os.Getenv("PREFIX"),
 	}
 }
