@@ -7,7 +7,8 @@ import (
 )
 
 type Discord struct {
-	Token  string
+	Token    string
+	ServerID string
 }
 
 func LoadDiscord() Discord {
@@ -17,6 +18,7 @@ func LoadDiscord() Discord {
 	}
 
 	return Discord{
-		Token:  os.Getenv("TOKEN"),
+		Token:    os.Getenv("TOKEN"),
+		ServerID: os.Getenv("SERVER_ID"),
 	}
 }
