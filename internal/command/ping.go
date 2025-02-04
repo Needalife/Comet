@@ -8,12 +8,24 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-func pingCommand(s *discordgo.Session, m *discordgo.MessageCreate, args[] string) {
-	latency := time.Since(m.Timestamp).Milliseconds()
-	response := fmt.Sprintf("pong: %dms!", latency)
-	embed := &discordgo.MessageEmbed{
-		Title: response,
-		Color: colors.Green,
+func pingCommand(s *discordgo.Session, i *discordgo.InteractionCreate) {
+    timestamp, err := discordgo.SnowflakeTimestamp(i.ID)
+	if err != nil {
+		panic(err)
 	}
-	s.ChannelMessageSendEmbed(m.ChannelID, embed)
+	latency := time.Since(timestamp).Milliseconds()
+
+    embed := &discordgo.MessageEmbed{
+        Title: fmt.Sprintf("🏓 %dms", latency),
+        Color: colors.Green,
+    }
+
+    response := &discordgo.InteractionResponseData{
+        Embeds: []*discordgo.MessageEmbed{embed},
+    }
+
+    s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+        Type: discordgo.InteractionResponseChannelMessageWithSource,
+        Data: response,
+    })
 }
