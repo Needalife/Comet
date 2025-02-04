@@ -19,18 +19,19 @@ type bot struct {
 	db_client *mongo.Client
 }
 
-func mount(sess *discordgo.Session, prefix string) {
-	sess.AddHandler(func(s *discordgo.Session, m *discordgo.MessageCreate) {
-        if m.Author.ID == s.State.User.ID {
-            return
-        }
-
-		if handleCommand(s, m, prefix, command.Registry) {
-			return
-		}
+func mount(sess *discordgo.Session) {
+	sess.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+		command.HandleSlashCommand(s, i)
 	})
 
-	fmt.Println("Finish adding handlers!")
+	for _, cmd := range command.CommandDefinitions {
+		_, err := sess.ApplicationCommandCreate(sess.State.Application.ID, "", cmd)
+		if err != nil {
+			fmt.Printf("Error registering command %s: %v\n", cmd.Name, err)
+		}
+	}
+
+	fmt.Println("Finish adding handlers and registering commands!")
 	sess.Identify.Intents = discordgo.IntentsAllWithoutPrivileged
 }
 
@@ -43,10 +44,11 @@ func (app *bot) run() {
 		log.Fatal(err)
 	}
 
-	mount(sess, app.config.Discord.Prefix) //add handlers and privs
 	open(sess) //open session
 	defer sess.Close() 
 
+	mount(sess) //add handlers and privs
+	
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	<-sc
