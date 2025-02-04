@@ -33,7 +33,8 @@ func handleCommand(
 	if !strings.HasPrefix(m.Content, prefix) {
 		return false
 	}
-
+	
+	fmt.Printf("%v: %v", m.Author.Username, m.Content)
 	content := strings.TrimPrefix(m.Content, prefix)
 	args := strings.Fields(content)
 	if len(args) == 0 {
