@@ -1,3 +1,4 @@
 .env
 /bin
-/scripts
+scripts/config.json
+/scripts/node_modules
