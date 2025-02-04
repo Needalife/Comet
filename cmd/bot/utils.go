@@ -33,8 +33,8 @@ func handleCommand(
 	if !strings.HasPrefix(m.Content, prefix) {
 		return false
 	}
-	
-	fmt.Printf("%v: %v", m.Author.Username, m.Content)
+
+	fmt.Printf("%v uses '%v'\n", m.Author.GlobalName, m.Content)
 	content := strings.TrimPrefix(m.Content, prefix)
 	args := strings.Fields(content)
 	if len(args) == 0 {
@@ -47,6 +47,11 @@ func handleCommand(
 		handler(s, m, args[1:])
 		return true
 	}
-	s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Unknown command: %s", commandName))
+
+	embed := &discordgo.MessageEmbed{
+		Title: fmt.Sprintf("Unknown command: !%s", commandName),
+		Color: 0xFF0000,
+	}
+	s.ChannelMessageSendEmbed(m.ChannelID, embed)
 	return true
 }
