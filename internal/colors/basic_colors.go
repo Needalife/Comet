@@ -1,5 +1,6 @@
 package colors
 
+//basic colors
 const (
     Red    = 0xFF0000
     Green  = 0x00FF00
