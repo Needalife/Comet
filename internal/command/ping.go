@@ -8,7 +8,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-func pingCommand(s *discordgo.Session, i *discordgo.InteractionCreate) {
+func PingCommand(s *discordgo.Session, i *discordgo.InteractionCreate) {
     timestamp, err := discordgo.SnowflakeTimestamp(i.ID)
 	if err != nil {
 		panic(err)
