@@ -8,7 +8,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-func calculationCommand(s *discordgo.Session, i *discordgo.InteractionCreate) {
+func CalculationCommand(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	options := i.ApplicationCommandData().Options
 	var expression string
 
