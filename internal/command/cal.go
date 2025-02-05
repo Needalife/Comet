@@ -1,6 +1,7 @@
 package command
 
 import (
+	"Comet/internal/colors"
 	"fmt"
 	"strings"
 
@@ -42,13 +43,17 @@ func CalculationCommand(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		return
 	}
 
+	embed := &discordgo.MessageEmbed {
+		Title: fmt.Sprintf("%s = %v", expression, result),
+		Color: colors.Cyan,
+	}
+
 	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
-			Content: fmt.Sprintf("The result of `%s` is: %v", expression, result),
+			Embeds: []*discordgo.MessageEmbed{embed},
 		},
 	})
-	
 }
 
 func replaceOperator(expr string) string{
