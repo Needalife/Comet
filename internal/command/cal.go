@@ -2,6 +2,7 @@ package command
 
 import (
 	"Comet/internal/colors"
+	"Comet/internal/utils"
 	"fmt"
 	"strings"
 
@@ -21,12 +22,14 @@ func CalculationCommand(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	}
 
 	expression = replaceOperator(expression)
+
 	eval, err := govaluate.NewEvaluableExpression(expression)
 	if err != nil {
+		msg := fmt.Sprintf("Invalid expression: %s", err.Error())
 		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
-				Content: fmt.Sprintf("Invalid expression: %s", err.Error()),
+				Embeds: []*discordgo.MessageEmbed{utils.ErrorEmbed(msg)},
 			},
 		})
 		return
@@ -34,10 +37,11 @@ func CalculationCommand(s *discordgo.Session, i *discordgo.InteractionCreate) {
 
 	result, err := eval.Evaluate(nil)
 	if err != nil {
+		msg := fmt.Sprintf("Fail to evaluate expression: %s", err.Error())
 		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
-				Content: fmt.Sprintf("Fail to evaluate expression: %s", err.Error()),
+				Embeds: []*discordgo.MessageEmbed{utils.ErrorEmbed(msg)},
 			},
 		})
 		return
