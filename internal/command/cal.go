@@ -53,5 +53,6 @@ func CalculationCommand(s *discordgo.Session, i *discordgo.InteractionCreate) {
 
 func replaceOperator(expr string) string{
 	expr = strings.ReplaceAll(expr, "x", "*")
+	expr = strings.ReplaceAll(expr, ":", "/")
 	return expr
 }
