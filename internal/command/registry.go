@@ -7,7 +7,7 @@ var Registry = map[string]func(s *discordgo.Session, i *discordgo.InteractionCre
 	"ping": pingCommand,
 }
 
-var CommandDefinitions = []*discordgo.ApplicationCommand{
+var Definitions = []*discordgo.ApplicationCommand{
 	{
 		Name: "ping",
 		Description: "Replies with pong!",
