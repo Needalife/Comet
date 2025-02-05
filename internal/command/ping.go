@@ -20,12 +20,10 @@ func PingCommand(s *discordgo.Session, i *discordgo.InteractionCreate) {
         Color: colors.Green,
     }
 
-    response := &discordgo.InteractionResponseData{
-        Embeds: []*discordgo.MessageEmbed{embed},
-    }
-
     s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
         Type: discordgo.InteractionResponseChannelMessageWithSource,
-        Data: response,
+        Data: &discordgo.InteractionResponseData{
+            Embeds: []*discordgo.MessageEmbed{embed},
+        },
     })
 }
