@@ -11,7 +11,10 @@ require (
 	golang.org/x/sys v0.27.0 // indirect
 )
 
-require go.mongodb.org/mongo-driver/v2 v2.0.0
+require (
+	github.com/Knetic/govaluate v3.0.0+incompatible
+	go.mongodb.org/mongo-driver/v2 v2.0.0
+)
 
 require (
 	github.com/golang/snappy v0.0.4 // indirect
