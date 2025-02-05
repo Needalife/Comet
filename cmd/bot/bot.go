@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Comet/internal/command"
+	"Comet/internal/core"
 	"Comet/internal/config"
 	"Comet/internal/db"
 	"fmt"
@@ -24,17 +24,17 @@ func mount(sess *discordgo.Session, servId string) {
 
     sess.AddHandler(func(s *discordgo.Session, r *discordgo.Ready) {
         fmt.Println("Registering commands...")
-        for _, cmd := range command.Definitions {
+        for _, cmd := range core.Definitions {
             _, err := s.ApplicationCommandCreate(s.State.Application.ID, servId, cmd)
             if err != nil {
                 log.Printf("Error registering %s: %v", cmd.Name, err)
             }
         }
     })
-
+	
     sess.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
         fmt.Print("Handle interaction: ")
-        command.HandleSlashCommand(s, i)
+		core.HandleSlashCommand(s,i)
     })
 }
 
