@@ -7,7 +7,7 @@ import (
 )
 
 func HandleSlashCommand(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	if handler, exists := Registry[i.ApplicationCommandData().Name]; exists {
+	if handler, exists := CommandRegistry[i.ApplicationCommandData().Name]; exists {
 		handler(s, i)
 		fmt.Printf("%s uses /%v\n",i.Member.User.GlobalName, i.ApplicationCommandData().Name)
 	} else {
