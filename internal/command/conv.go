@@ -1,6 +1,7 @@
 package command
 
 import (
+	"Comet/internal/config"
 	"Comet/internal/utils"
 	"encoding/json"
 	"fmt"
@@ -10,24 +11,26 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
+var key = config.LoadExchangeRateAPIKey()
+
 func ConvertCurrencyCommand(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	options := i.ApplicationCommandData().Options
 	var amount float64
-	var from_currency, to_currency string
+	var from_country, to_country string
 
 	for _, opt := range options {
 		switch opt.Name {
 		case "amount":
 			amount = opt.FloatValue()
-		case "from_currency":
-			from_currency = opt.StringValue()
-		case "to_currency":
-			to_currency = opt.StringValue()
+		case "from_country":
+			from_country = opt.StringValue()
+		case "to_country":
+			to_country = opt.StringValue()
 		}
 	}
 
-	if amount <= 0 || from_currency == "" || to_currency == "" {
-		msg := "Please provide a valid amount, from-currency, to-currency"
+	if amount <= 0 || from_country == "" || to_country == "" {
+		msg := "Please provide a valid amount, from-country, to-country"
 		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
@@ -35,6 +38,9 @@ func ConvertCurrencyCommand(s *discordgo.Session, i *discordgo.InteractionCreate
 			},
 		})
 	}
+	
+
+	exchangeRate, err := fetchExchangeRate(key, )
 }
 
 type exchangeRateResponse struct {
