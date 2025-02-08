@@ -1,6 +1,7 @@
 package command
 
 import (
+	"Comet/internal/colors"
 	"Comet/internal/config"
 	"Comet/internal/utils"
 	"encoding/json"
@@ -38,7 +39,7 @@ func ConvertCurrencyCommand(s *discordgo.Session, i *discordgo.InteractionCreate
 			},
 		})
 	}
-	
+
 	from_currency, from_exists := utils.CountryToCurrency[from_country]
 	to_currency, to_exists := utils.CountryToCurrency[to_country]
 	if !from_exists || !to_exists {
@@ -51,7 +52,7 @@ func ConvertCurrencyCommand(s *discordgo.Session, i *discordgo.InteractionCreate
 		})
 	}
 
-	exchangeRate, err := fetchExchangeRate(key, from_currency, to_currency)
+	exchangeRate, exchangeResult, err := convertCurrency(key, amount, from_currency, to_currency)
 	if err != nil {
 		msg := fmt.Sprintf("Error fetching API: %s", err)
 		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
@@ -62,9 +63,10 @@ func ConvertCurrencyCommand(s *discordgo.Session, i *discordgo.InteractionCreate
 		})
 	}
 
-	result := amount * exchangeRate
-	embed := &discordgo.MessageEmbed {
-		Title: fmt.Sprintf("%v",result),
+	embed := &discordgo.MessageEmbed{
+		Title: fmt.Sprintf("%s -> %s", from_currency, to_currency),
+		Description: fmt.Sprintf("Result: %v\nRate: %v", exchangeResult, exchangeRate),
+		Color: colors.BrightGreen,
 	}
 
 	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
@@ -75,34 +77,35 @@ func ConvertCurrencyCommand(s *discordgo.Session, i *discordgo.InteractionCreate
 	})
 }
 
-type exchangeRateResponse struct {
-	Result         string  `json:"result"`
-	ConversionRate float64 `json:"conversion_rate"`
+type exchangeCurrencyResponse struct {
+	Result           string  `json:"result"`
+	ConversionRate   float64 `json:"conversion_rate"`
+	ConversionResult float64 `json:"conversion_result"`
 }
 
-func fetchExchangeRate(apiKey, baseCurrency, targetCurrency string) (float64, error) {
-	url := fmt.Sprintf("https://v6.exchangerate-api.com/v6/%s/pair/%s/%s",
+func convertCurrency(apiKey string, amount float64, baseCurrency string, targetCurrency string) (float64, float64, error) {
+	url := fmt.Sprintf("https://v6.exchangerate-api.com/v6/%s/pair/%s/%s/%v",
 		apiKey,
 		baseCurrency,
-		targetCurrency)
+		targetCurrency,
+		amount)
 
 	client := &http.Client{Timeout: 10 * time.Second}
 	resp, err := client.Get(url)
 	if err != nil {
-		return 0, fmt.Errorf("Failed to fetch exchange rate api: %v\n",err)
+		return 0, 0, fmt.Errorf("Failed to fetch exchange rate api: %v\n", err)
 	}
 	defer resp.Body.Close()
 
-	var exchangeRate exchangeRateResponse
-	err = json.NewDecoder(resp.Body).Decode(&exchangeRate)
+	var exchangeCurrency exchangeCurrencyResponse
+	err = json.NewDecoder(resp.Body).Decode(&exchangeCurrency)
 	if err != nil {
-		return 0, fmt.Errorf("Fail to decode response: %v\n", err)
+		return 0, 0, fmt.Errorf("Fail to decode response: %v\n", err)
 	}
 
-	if exchangeRate.Result != "success" {
-		return 0, fmt.Errorf("API returned an error: %s\n", exchangeRate.Result)
+	if exchangeCurrency.Result != "success" {
+		return 0, 0, fmt.Errorf("API returned an error: %s\n", exchangeCurrency.Result)
 	}
 
-
-	return exchangeRate.ConversionRate, nil
+	return exchangeCurrency.ConversionRate, exchangeCurrency.ConversionResult, nil
 }
