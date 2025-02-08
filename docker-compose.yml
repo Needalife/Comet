@@ -9,4 +9,5 @@ services:
         TOKEN: ${TOKEN}
         SERVER_ID: ${SERVER_ID}
         MONGO_URI: ${MONGO_URI}
+        EXCHANGE_RATE_API_KEY: ${EXCHANGE_RATE_API_KEY}
       
