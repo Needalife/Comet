@@ -39,8 +39,18 @@ func ConvertCurrencyCommand(s *discordgo.Session, i *discordgo.InteractionCreate
 		})
 	}
 	
+	from_currency, from_exists := utils.CountryToCurrency[from_country]
+	to_currency, to_exists := utils.CountryToCurrency[to_country]
+	if !from_exists || !to_exists {
+		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+			Type: discordgo.InteractionResponseChannelMessageWithSource,
+			Data: &discordgo.InteractionResponseData{
+				Embeds: []*discordgo.MessageEmbed{utils.ErrorEmbed(fmt.Sprintf("%s or %s is not a valid country", from_country, to_country))},
+			},
+		})
+	}
 
-	exchangeRate, err := fetchExchangeRate(key, )
+	exchangeRate, err := fetchExchangeRate(key, from_currency, to_currency)
 }
 
 type exchangeRateResponse struct {
