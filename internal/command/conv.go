@@ -42,15 +42,37 @@ func ConvertCurrencyCommand(s *discordgo.Session, i *discordgo.InteractionCreate
 	from_currency, from_exists := utils.CountryToCurrency[from_country]
 	to_currency, to_exists := utils.CountryToCurrency[to_country]
 	if !from_exists || !to_exists {
+		msg := fmt.Sprintf("%s or %s is not a valid country", from_country, to_country)
 		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
-				Embeds: []*discordgo.MessageEmbed{utils.ErrorEmbed(fmt.Sprintf("%s or %s is not a valid country", from_country, to_country))},
+				Embeds: []*discordgo.MessageEmbed{utils.ErrorEmbed(msg)},
 			},
 		})
 	}
 
 	exchangeRate, err := fetchExchangeRate(key, from_currency, to_currency)
+	if err != nil {
+		msg := fmt.Sprintf("Error fetching API: %s", err)
+		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+			Type: discordgo.InteractionResponseChannelMessageWithSource,
+			Data: &discordgo.InteractionResponseData{
+				Embeds: []*discordgo.MessageEmbed{utils.ErrorEmbed(msg)},
+			},
+		})
+	}
+
+	result := amount * exchangeRate
+	embed := &discordgo.MessageEmbed {
+		Title: fmt.Sprintf("%v",result),
+	}
+
+	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+		Type: discordgo.InteractionResponseChannelMessageWithSource,
+		Data: &discordgo.InteractionResponseData{
+			Embeds: []*discordgo.MessageEmbed{embed},
+		},
+	})
 }
 
 type exchangeRateResponse struct {
