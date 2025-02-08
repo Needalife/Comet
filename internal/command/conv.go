@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/dustin/go-humanize"
 )
 
 var key = config.LoadExchangeRateAPIKey()
@@ -65,7 +66,7 @@ func ConvertCurrencyCommand(s *discordgo.Session, i *discordgo.InteractionCreate
 
 	embed := &discordgo.MessageEmbed{
 		Title: fmt.Sprintf("%s -> %s", from_currency, to_currency),
-		Description: fmt.Sprintf("Result: %v\nRate: %v", exchangeResult, exchangeRate),
+		Description: fmt.Sprintf("**Result**: %v\n**Rate**: %v", humanize.Commaf(exchangeResult), humanize.Commaf(exchangeRate)),
 		Color: colors.BrightGreen,
 	}
 
