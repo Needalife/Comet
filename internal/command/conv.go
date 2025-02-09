@@ -66,8 +66,17 @@ func ConvertCurrencyCommand(s *discordgo.Session, i *discordgo.InteractionCreate
 
 	embed := &discordgo.MessageEmbed{
 		Title: fmt.Sprintf("%s -> %s", from_currency, to_currency),
-		Description: fmt.Sprintf("**Result**: %v\n**Rate**: %v", humanize.Commaf(exchangeResult), humanize.Commaf(exchangeRate)),
-		Color: colors.BrightGreen,
+		Description: fmt.Sprintf("**Amount**: *%v*\n**Result**: *%s*\n**Rate**: *%v*",
+			humanize.Commaf(amount),
+			utils.FormatNumberWithComas(exchangeResult),
+			humanize.Commaf(exchangeRate)),
+		Color: colors.BrightPurple,
+		Thumbnail: &discordgo.MessageEmbedThumbnail{
+			URL: "https://i.imgur.com/cn6QoeG.png",
+		},
+		Footer: &discordgo.MessageEmbedFooter{
+			Text: "Powered by exchangerate-api.com",
+		},
 	}
 
 	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
@@ -84,8 +93,13 @@ type exchangeCurrencyResponse struct {
 	ConversionResult float64 `json:"conversion_result"`
 }
 
-func convertCurrency(apiKey string, amount float64, baseCurrency string, targetCurrency string) (float64, float64, error) {
-	url := fmt.Sprintf("https://v6.exchangerate-api.com/v6/%s/pair/%s/%s/%v",
+func convertCurrency(
+	apiKey string,
+	amount float64,
+	baseCurrency string,
+	targetCurrency string) (
+	float64, float64, error) {
+	url := fmt.Sprintf("https://v6.exchangerate-api.com/v6/%s/pair/%s/%s/%.0f",
 		apiKey,
 		baseCurrency,
 		targetCurrency,
@@ -94,18 +108,18 @@ func convertCurrency(apiKey string, amount float64, baseCurrency string, targetC
 	client := &http.Client{Timeout: 10 * time.Second}
 	resp, err := client.Get(url)
 	if err != nil {
-		return 0, 0, fmt.Errorf("Failed to fetch exchange rate api: %v\n", err)
+		return 0, 0, fmt.Errorf("failed to fetch exchange rate api: %v", err)
 	}
 	defer resp.Body.Close()
 
 	var exchangeCurrency exchangeCurrencyResponse
 	err = json.NewDecoder(resp.Body).Decode(&exchangeCurrency)
 	if err != nil {
-		return 0, 0, fmt.Errorf("Fail to decode response: %v\n", err)
+		return 0, 0, fmt.Errorf("fail to decode response: %v", err)
 	}
 
 	if exchangeCurrency.Result != "success" {
-		return 0, 0, fmt.Errorf("API returned an error: %s\n", exchangeCurrency.Result)
+		return 0, 0, fmt.Errorf("api returned an error: %s", exchangeCurrency.Result)
 	}
 
 	return exchangeCurrency.ConversionRate, exchangeCurrency.ConversionResult, nil
