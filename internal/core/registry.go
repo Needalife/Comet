@@ -10,4 +10,5 @@ var CommandRegistry = map[string]func(s *discordgo.Session, i *discordgo.Interac
 	"ping": command.PingCommand,
 	"cal":  command.CalculationCommand,
 	"conv": command.ConvertCurrencyCommand,
+	"author": command.AuthorCommand,
 }
