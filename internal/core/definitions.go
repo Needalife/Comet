@@ -10,11 +10,11 @@ var CommandDefinitions = []*discordgo.ApplicationCommand{
 		Description: "Replies with pong!",
 	},
 	{
-		Name: "author",
+		Name:        "author",
 		Description: "Vally",
 	},
 	{
-		Name: "src",
+		Name:        "src",
 		Description: "Source code",
 	},
 	{
