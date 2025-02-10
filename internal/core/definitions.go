@@ -14,6 +14,10 @@ var CommandDefinitions = []*discordgo.ApplicationCommand{
 		Description: "Vally",
 	},
 	{
+		Name: "src",
+		Description: "Source code",
+	},
+	{
 		Name:        "cal",
 		Description: "Calculate a mathematical expresison",
 		Options: []*discordgo.ApplicationCommandOption{
