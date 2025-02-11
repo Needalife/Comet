@@ -12,4 +12,5 @@ var CommandRegistry = map[string]func(s *discordgo.Session, i *discordgo.Interac
 	"conv":   command.ConvertCurrencyCommand,
 	"author": command.AuthorCommand,
 	"src":    command.SourceCommand,
+	"gw2":    command.GW2Commands,
 }
