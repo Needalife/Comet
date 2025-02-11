@@ -27,7 +27,7 @@ func mount(sess *discordgo.Session, servId string) {
         for _, cmd := range core.CommandDefinitions {
             _, err := s.ApplicationCommandCreate(s.State.Application.ID, servId, cmd)
             if err != nil {
-                log.Printf("Error registering %s: %v", cmd.Name, err)
+                fmt.Printf("Error registering %s: %v", cmd.Name, err)
             }
         }
     })
