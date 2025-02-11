@@ -53,4 +53,28 @@ var CommandDefinitions = []*discordgo.ApplicationCommand{
 			},
 		},
 	},
+	{
+		Name:        "gw2",
+		Description: "GW2 commands (e.g., /time, /price)",
+		Options: []*discordgo.ApplicationCommandOption{
+			{
+				Type:        discordgo.ApplicationCommandOptionSubCommand,
+				Name:        "time",
+				Description: "Get the time zone of a region",
+			},
+			{
+				Type:        discordgo.ApplicationCommandOptionSubCommand,
+				Name:        "price",
+				Description: "Get the price of an item",
+				Options: []*discordgo.ApplicationCommandOption{
+					{
+						Type: discordgo.ApplicationCommandOptionString,
+						Name: "item",
+						Description: "Item name",
+						Required: true,
+					},
+				},
+			},
+		},
+	},
 }
