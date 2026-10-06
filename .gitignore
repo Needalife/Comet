@@ -1,1 +1,4 @@
 /.vs
+/Comet/bin
+/Comet/obj
+Comet/appsettings.json
