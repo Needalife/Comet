@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Comet": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}

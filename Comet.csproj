@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\items-en.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\items-en.json" />
+    <Content Include="Resources\items.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.24.2-preview.1" />
+    <PackageReference Include="NetCord" Version="1.0.0-beta.28" />
+    <PackageReference Include="NetCord.Hosting" Version="1.0.0-beta.28" />
+    <PackageReference Include="NetCord.Hosting.AspNetCore" Version="1.0.0-beta.28" />
+    <PackageReference Include="NetCord.Hosting.Services" Version="1.0.0-beta.28" />
+    <PackageReference Include="NetCord.Services" Version="1.0.0-beta.28" />
+	<None Update="appsettings.json">
+		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	</None>
+  </ItemGroup>
+
+</Project>
