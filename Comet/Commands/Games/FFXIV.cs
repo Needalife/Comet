@@ -39,4 +39,26 @@ public class FFXIV : ApplicationCommandModule<ApplicationCommandContext>
         await File.WriteAllTextAsync(outputPath, outputJson);
         return $"Converted {converted.Count:N0} items to {outputPath}."; 
     }
+
+    [SubSlashCommand("pc", "Price check an item")]
+    public string PriceCheck(string item)
+    {
+        var json = await File.ReadAllTextAsync(Path.Combine(AppContext.BaseDirectory, "Resources", "items-en.json"));
+        if (json == null)
+        {
+            return "Resource not found, have you convert it yet?";
+        }
+
+        var items = JsonSerializer.Deserialize<Dictionary<string, int>>(json);
+        if (items != null && items.TryGetValue(item, out var itemId))
+        {
+            return $"Item found: {itemId}";
+        }
+        else
+        {
+            return "Item not found";
+        }
+    }
+
 }
+
